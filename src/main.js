@@ -8,9 +8,9 @@ const postgresConfig = require('./database/postgresConfig.js');
 const consoleDescription = require('./helpers/consoleDescription.js');
 
 const toMinute = (seconds) => {
-  const minutes = Math.floor((seconds / 60));
-  const remainingSeconds = (seconds % 60).toFixed();
-  return minutes + ':' + remainingSeconds;
+  const minutes = Math.trunc(seconds / 60);
+  const remainingSeconds = Math.trunc((seconds / 60 - minutes) * 60);
+  return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
 };
 
 const measureElapsedTimeOnSec = () => {
@@ -28,7 +28,6 @@ const bootstrap = async () => {
   const totalStart = measureElapsedTimeOnSec();
   const proxyService = new ProxyRepository(postgresConfig, saveAlivesToLog);
   await proxyService.migrateTables();
-
   const scraperStart = measureElapsedTimeOnSec();
   await proxyScraper(proxyService, proxySources);
   const scraperElapsed = scraperStart();
