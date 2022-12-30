@@ -6,6 +6,7 @@ const proxySources = require('./sources/proxySources.js');
 const { saveAlivesToLog } = require('./helpers/logSaver.js');
 const postgresConfig = require('./database/postgresConfig.js');
 const consoleDescription = require('./helpers/consoleDescription.js');
+
 const toMinute = (seconds) => {
   const minutes = Math.floor((seconds / 60));
   const remainingSeconds = (seconds % 60).toFixed();
