@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+    db:
+        container_name: proxy-db
+        image: postgres
+        restart: always
+        ports:
+            - '5432:5432'
+        volumes:
+            - ./pg-data:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_PASSWORD=admin
+            - POSTGRES_USER=admin
+            - POSTGRES_DB=admin
