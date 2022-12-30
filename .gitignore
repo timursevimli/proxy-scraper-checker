@@ -1,0 +1,10 @@
+.DS_Store
+Thumbs.db
+.Spotlight-V100
+.Trashes
+*.swp
+*.swo
+/src/deneme.js
+pg-data/
+node_modules/
+*.log
