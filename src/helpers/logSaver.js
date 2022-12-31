@@ -5,23 +5,23 @@ const { dateParser, timeParser } = require('./dates.js');
 const { yellow, green } = require('./Colorer.js');
 
 const fileIsExist = (filename) => {
-  const defaultPath = path.join(__dirname, '..', `/logs/${filename}.log`);
+  const defaultPath = path.join(__dirname, '../..', `/logs/${filename}.log`);
   const isExist = fs.existsSync(defaultPath);
   return isExist;
 };
 
 const removeFile = (filename) => {
-  const defaultPath = path.join(__dirname, '..', `/logs/${filename}.log`);
+  const defaultPath = path.join(__dirname, '../..', `/logs/${filename}.log`);
   fs.unlinkSync(defaultPath);
 };
 
 const writeFile = (filename, data) => {
-  const defaultPath = path.join(__dirname, '..', `/logs/${filename}.log`);
+  const defaultPath = path.join(__dirname, '../..', `/logs/${filename}.log`);
   fs.appendFileSync(defaultPath, data + '\n', 'utf8');
 };
 
 const createFile = async (filename) => {
-  const defaultPath = path.join(__dirname, '..', `/logs/${filename}.log`);
+  const defaultPath = path.join(__dirname, '../..', `/logs/${filename}.log`);
   const title = dateParser() + ' | ' + timeParser() + ' | Alesko | https://github.com/Alesko43/proxy-scraper-checker\n\n';
   fs.writeFileSync(defaultPath, title, 'utf8');
 };
