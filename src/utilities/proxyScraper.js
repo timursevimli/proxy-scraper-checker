@@ -43,7 +43,6 @@ const proxySaver = async (proxyRepository, proxies) => {
     await proxyRepository.insertScrapedProxy(ip, port);
     logger(i);
   }
-  return Promise.resolve();
 };
 
 const proxyParser = async (proxyRepository, datas) => {
