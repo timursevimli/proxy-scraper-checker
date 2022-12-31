@@ -39,8 +39,7 @@ const proxySaver = async (proxyRepository, proxies) => {
   const count = proxies.length;
   const logger = scraperLogger(count);
   for (const [i, proxy] of proxies.entries()) {
-    const [ip, port] = proxy.split(':');
-    await proxyRepository.insertScrapedProxy(ip, port);
+    await proxyRepository.insertScrapedProxy(proxy);
     logger(i);
   }
 };
