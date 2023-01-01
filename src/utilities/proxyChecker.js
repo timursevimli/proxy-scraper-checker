@@ -69,7 +69,8 @@ const makeRequest = async (
 };
 
 const proxyChecker = async (scrapedProxies) => {
-  const proxiesCount = scrapedProxies.length;
+  const uniqueScrapedProxies = new Set(scrapedProxies);
+  const proxiesCount = uniqueScrapedProxies.length;
   const logger = checkerLogger(proxiesCount);
   const threat = parseInt(process.env.CHECKER_THREAT) || 300;
   console.log(threat);
@@ -81,7 +82,7 @@ const proxyChecker = async (scrapedProxies) => {
   if (isExist) removeFile(logsFile);
   createFile(logsFile);
 
-  for (const proxy of scrapedProxies) {
+  for (const proxy of uniqueScrapedProxies) {
     promises.push(queue.add(() =>
       makeRequest(proxy, logger)
     ));
