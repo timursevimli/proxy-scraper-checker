@@ -35,31 +35,35 @@ const scraperLogger = (count) => {
   };
 };
 
-const proxySaver = async (proxyRepository, proxies) => {
+const proxySaver = async (proxies) => {
   const count = proxies.length;
   const logger = scraperLogger(count);
+  const scrapedProxies = [];
+
   for (const [i, proxy] of proxies.entries()) {
-    await proxyRepository.insertScrapedProxy(proxy);
     logger(i);
+    scrapedProxies.push(proxy);
   }
+
+  return scrapedProxies;
 };
 
-const proxyParser = async (proxyRepository, datas) => {
+const proxyParser = async (datas) => {
   const parsedData = datas.split(/\s+/);
   const ipPortPattern = /(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5})/;
   const parsedProxies = [];
   for (const data of parsedData) {
-    const result = ipPortPattern.exec(data);
-    if (!result) continue;
-    const proxy = result[0];
+    const check = ipPortPattern.exec(data);
+    if (!check) continue;
+    const proxy = check[0];
     parsedProxies.push(proxy);
   }
-  return await proxySaver(proxyRepository, parsedProxies);
+  return await proxySaver(parsedProxies);
 };
 
-const proxyScraper = async (proxyRepository, urls) => {
+const proxyScraper = async (urls) => {
   const uniqueUrls = new Set(urls);
-  const threat = parseInt(process.env.SCRAPER_THREAT);
+  const threat = parseInt(process.env.SCRAPER_THREAT) || 100;
   const queue = pLimit(threat);
   const promises = [];
   const datas = [];
@@ -74,7 +78,7 @@ const proxyScraper = async (proxyRepository, urls) => {
   await Promise.all(promises);
   saveErrorsToLog(errors);
   const datasToString = datas.toString();
-  return await proxyParser(proxyRepository, datasToString);
+  return await proxyParser(datasToString);
 };
 
 module.exports = proxyScraper;
