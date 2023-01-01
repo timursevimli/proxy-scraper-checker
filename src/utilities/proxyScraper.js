@@ -12,13 +12,13 @@ const scraperLogger = (count) => {
     const end = '\r';
     process.stdout.write(
       yellow('[SCRAPER WORKING]') +
-      ' Scraped count: ' + count +
+      ' Scraped count: ' + green(count) +
       yellow('|') +
-      'Saved: ' + (++stats.saved) +
+      'Saved: ' + green(++stats.saved) +
       yellow('|') +
-      'Unsaved: ' +  (--stats.unsaved) +
+      'Unsaved: ' +  red(--stats.unsaved) +
       yellow('|') +
-      'Progress: ' +  (count === index + 1 ? 100 : progress) + '%' + end
+      'Progress: ' +  green((count === index + 1 ? 100 : progress) + '%' + end)
     );
     if (count === index + 1) {
       return console.log(
