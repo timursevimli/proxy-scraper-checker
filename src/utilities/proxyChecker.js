@@ -1,7 +1,6 @@
 'use strict';
 const axios = require('axios');
 const checkerOptions = require('../options/checkerRequestParam.js');
-// const pLimit = require('p-limit');
 const { default: PQueue } = require('p-queue');
 const { yellow, green, red } = require('../helpers/Colorer.js');
 const {
@@ -70,7 +69,7 @@ const makeRequest = async (
 
 const proxyChecker = async (scrapedProxies) => {
   const uniqueScrapedProxies = new Set(scrapedProxies);
-  const proxiesCount = uniqueScrapedProxies.length;
+  const proxiesCount = uniqueScrapedProxies.size;
   const logger = checkerLogger(proxiesCount);
   const threat = parseInt(process.env.CHECKER_THREAT) || 300;
   console.log(threat);
