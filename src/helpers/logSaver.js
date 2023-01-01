@@ -2,7 +2,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { dateParser, timeParser } = require('./dates.js');
-const { yellow, green } = require('./Colorer.js');
 
 const fileIsExist = (filename) => {
   const defaultPath = path.join(__dirname, '../..', `/logs/${filename}.log`);
@@ -40,36 +39,15 @@ const saveErrorsToLog = (errors) => {
   }
 };
 
-const saveAlivesToLog = (proxies) => {
+const saveAlivesToLog = (ip, port, countryCode) => {
   const aliveFileName = 'alive_proxies';
-  const isExist = fileIsExist(aliveFileName);
-
-  if (isExist) removeFile(aliveFileName);
-  createFile(aliveFileName);
-
-  for (const proxy of proxies) {
-    const { ip, port, country, createdAt, updatedAt } = {
-      ...proxy,
-      createdAt: proxy.created_at,
-      updatedAt: proxy.updated_at,
-    };
-
-    const updatedDate = dateParser(updatedAt);
-    const updatedTime = timeParser(updatedAt);
-
-    const createdDate = dateParser(createdAt);
-    const createdTime = timeParser(createdAt);
-
-    const parsedData =
-    'Updated: ' + updatedDate + ' ' + updatedTime +
-    ' | Created: ' + createdDate + ' ' + createdTime +
-    ' | ' + country + ' | ' + ip + ':' + port;
-    writeFile(aliveFileName, parsedData);
-  }
-  console.log(
-    yellow('[LOGFILE]') +
-    'Saved to alive proxies =>' +
-    green(aliveFileName + '.log')
-  );
+  const parsedData = `${countryCode} | ${ip}:${port}`;
+  writeFile(aliveFileName, parsedData);
 };
-module.exports = { saveErrorsToLog, saveAlivesToLog };
+module.exports = {
+  saveErrorsToLog,
+  saveAlivesToLog,
+  createFile,
+  removeFile,
+  fileIsExist
+};

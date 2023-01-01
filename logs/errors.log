@@ -1,10 +1,100 @@
-2022-12-31 | 21:01:19 | Alesko | https://github.com/Alesko43/proxy-scraper-checker
+2023-01-01 | 04:31:16 | Alesko | https://github.com/Alesko43/proxy-scraper-checker
 
 URL: timeout | Error: Invalid URL
-URL: https://www.proxyscan.io/download?type=socks4 | Error: Request failed with status code 403
-URL: https://www.proxyscan.io/download?type=socks5 | Error: Request failed with status code 403
-URL: https://www.proxy-list.download/api/v0/get?l=en&t=https | Error: Request failed with status code 404
-URL: https://2ip.ru/proxy/ | Error: Request failed with status code 503
-URL: https://raw.githubusercontent.com/HyperBeats/proxy-list/main/https.txt | Error: Request failed with status code 404
-URL: https://www.proxyscan.io/download?type=http | Error: Request failed with status code 403
+URL: https://free-proxy-list.net/ | Error: timeout of 10000ms exceeded
 URL: http://free-proxy.cz/en/ | Error: timeout of 10000ms exceeded
+URL: https://www.geonode.com/free-proxy-list/ | Error: timeout of 10000ms exceeded
+URL: https://github.com/clarketm/proxy-list/blob/master/proxy-list.txt | Error: timeout of 10000ms exceeded
+URL: https://spys.me/socks.txt | Error: timeout of 10000ms exceeded
+URL: http://spys.me/proxy.txt | Error: timeout of 10000ms exceeded
+URL: http://www.httptunnel.ge/ProxyListForFree.aspx | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/sunny9577/proxy-scraper/master/proxies.json | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/fate0/proxylist/master/proxy.list | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/opsxcq/proxy-list/master/list.txt | Error: timeout of 10000ms exceeded
+URL: https://www.us-proxy.org/ | Error: timeout of 10000ms exceeded
+URL: https://www.sslproxies.org/ | Error: timeout of 10000ms exceeded
+URL: https://www.proxy-list.download/api/v0/get?l=en&t=https | Error: timeout of 10000ms exceeded
+URL: https://api.proxyscrape.com/?request=getproxies&proxytype=http&timeout=6000&country=all&ssl=yes&anonymity=all | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/http.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/shiftytr/proxy-list/master/proxy.txt | Error: timeout of 10000ms exceeded
+URL: https://www.hide-my-ip.com/proxylist.shtml | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/scidam/proxy-list/master/proxy.json | Error: timeout of 10000ms exceeded
+URL: https://www.proxy-list.download/api/v1/get?type=https | Error: timeout of 10000ms exceeded
+URL: https://www.proxy-list.download/api/v1/get?type=http | Error: timeout of 10000ms exceeded
+URL: https://www.proxy-list.download/api/v1/get?type=socks4 | Error: timeout of 10000ms exceeded
+URL: https://www.proxy-list.download/api/v1/get?type=socks5 | Error: timeout of 10000ms exceeded
+URL: https://2ip.ru/proxy/ | Error: timeout of 10000ms exceeded
+URL: https://proxypedia.org/ | Error: timeout of 10000ms exceeded
+URL: http://rootjazz.com/proxies/proxies.txt | Error: timeout of 10000ms exceeded
+URL: http://free-fresh-proxy-daily.blogspot.com/ | Error: timeout of 10000ms exceeded
+URL: https://free-proxy-list.net | Error: timeout of 10000ms exceeded
+URL: https://premiumproxy.net/ | Error: timeout of 10000ms exceeded
+URL: https://github.com/ShiftyTR/Proxy-List/blob/master/proxy.txt | Error: timeout of 10000ms exceeded
+URL: https://github.com/ShiftyTR/Proxy-List/blob/master/http.txt | Error: timeout of 10000ms exceeded
+URL: https://github.com/ShiftyTR/Proxy-List/blob/master/https.txt | Error: timeout of 10000ms exceeded
+URL: https://github.com/ShiftyTR/Proxy-List/blob/master/socks4.txt | Error: timeout of 10000ms exceeded
+URL: https://github.com/ShiftyTR/Proxy-List/blob/master/socks5.txt | Error: timeout of 10000ms exceeded
+URL: https://ab57.ru/proxylist.html | Error: timeout of 10000ms exceeded
+URL: https://xseo.in/freeproxy | Error: timeout of 10000ms exceeded
+URL: http://russianproxy.ru/proxy_list_http_fastest | Error: timeout of 10000ms exceeded
+URL: https://github.com/TheSpeedX/PROXY-List/blob/master/http.txt | Error: timeout of 10000ms exceeded
+URL: https://github.com/TheSpeedX/PROXY-List/blob/master/socks5.txt | Error: timeout of 10000ms exceeded
+URL: https://github.com/TheSpeedX/PROXY-List/blob/master/socks4.txt | Error: timeout of 10000ms exceeded
+URL: https://github.com/opsxcq/proxy-list/blob/master/list.txt | Error: timeout of 10000ms exceeded
+URL: https://github.com/x-o-r-r-o/proxy-list/blob/master/proxy-list.txt | Error: timeout of 10000ms exceeded
+URL: https://free-proxy-list.net/anonymous-proxy.html | Error: timeout of 10000ms exceeded
+URL: https://free-proxy-list.net/uk-proxy.html | Error: timeout of 10000ms exceeded
+URL: https://proxy-daily.com/ | Error: timeout of 10000ms exceeded
+URL: https://api.proxyscrape.com/?request=displayproxies&proxytype=socks4 | Error: timeout of 10000ms exceeded
+URL: https://api.proxyscrape.com/v2/?request=displayproxies&protocol=socks4 | Error: timeout of 10000ms exceeded
+URL: https://api.proxyscrape.com/?request=displayproxies&proxytype=socks4&country=all | Error: timeout of 10000ms exceeded
+URL: https://api.openproxylist.xyz/socks4.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/socks4.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/monosans/proxy-list/main/proxies_anonymous/socks4.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-socks4.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/socks4.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks4.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/roosterkid/openproxylist/main/SOCKS4_RAW.txt | Error: timeout of 10000ms exceeded
+URL: http://worm.rip/socks4.txt | Error: timeout of 10000ms exceeded
+URL: https://www.proxyscan.io/download?type=socks4 | Error: timeout of 10000ms exceeded
+URL: https://www.my-proxy.com/free-socks-4-proxy.html | Error: timeout of 10000ms exceeded
+URL: http://www.socks24.org/feeds/posts/default | Error: timeout of 10000ms exceeded
+URL: https://www.freeproxychecker.com/result/socks4_proxies.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/HyperBeats/proxy-list/main/socks4.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/mmpx12/proxy-list/master/socks4.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/saschazesiger/Free-Proxies/master/proxies/socks4.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/B4RC0DE-TM/proxy-list/main/SOCKS4.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/B4RC0DE-TM/proxy-list/main/SOCKS5.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/saschazesiger/Free-Proxies/master/proxies/socks5.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/mmpx12/proxy-list/master/socks5.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/HyperBeats/proxy-list/main/socks5.txt | Error: timeout of 10000ms exceeded
+URL: https://api.openproxylist.xyz/socks5.txt | Error: timeout of 10000ms exceeded
+URL: https://api.proxyscrape.com/?request=displayproxies&proxytype=socks5 | Error: timeout of 10000ms exceeded
+URL: https://api.proxyscrape.com/v2/?request=displayproxies&protocol=socks5 | Error: timeout of 10000ms exceeded
+URL: https://api.proxyscrape.com/v2/?request=getproxies&protocol=socks5&timeout=10000&country=all&simplified=true | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/manuGMG/proxy-365/main/SOCKS5.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/socks5.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/monosans/proxy-list/main/proxies_anonymous/socks5.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-socks5.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/roosterkid/openproxylist/main/SOCKS5_RAW.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks5.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/hookzof/socks5_list/master/proxy.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/BlackSnowDot/proxylist-update-every-minute/main/socks.txt | Error: timeout of 10000ms exceeded
+URL: http://worm.rip/socks5.txt | Error: timeout of 10000ms exceeded
+URL: https://www.freeproxychecker.com/result/socks5_proxies.txt | Error: timeout of 10000ms exceeded
+URL: https://www.proxyscan.io/download?type=socks5 | Error: timeout of 10000ms exceeded
+URL: https://www.my-proxy.com/free-socks-5-proxy.html | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/B4RC0DE-TM/proxy-list/main/HTTP.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/saschazesiger/Free-Proxies/master/proxies/http.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/HyperBeats/proxy-list/main/http.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/HyperBeats/proxy-list/main/https.txt | Error: timeout of 10000ms exceeded
+URL: https://raw.githubusercontent.com/mmpx12/proxy-list/master/http.txt | Error: timeout of 10000ms exceeded
+URL: https://api.proxyscrape.com/?request=displayproxies&proxytype=http | Error: timeout of 10000ms exceeded
+URL: https://api.openproxylist.xyz/http.txt | Error: timeout of 10000ms exceeded
+URL: http://alexa.lr2b.com/proxylist.txt | Error: timeout of 10000ms exceeded
+URL: https://multiproxy.org/txt_all/proxy.txt | Error: timeout of 10000ms exceeded
+URL: https://proxy-spider.com/api/proxies.example.txt | Error: timeout of 10000ms exceeded
+URL: http://proxysearcher.sourceforge.net/Proxy%20List.php?type=http | Error: timeout of 10000ms exceeded
+URL: https://www.proxyscan.io/download?type=http | Error: Request failed with status code 403
+URL: http://worm.rip/http.txt | Error: timeout of 10000ms exceeded
