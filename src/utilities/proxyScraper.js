@@ -36,29 +36,28 @@ const scraperLogger = (count) => {
 };
 
 const proxySaver = async (proxies) => {
-  const count = proxies.length;
+  const count = proxies.size;
   const logger = scraperLogger(count);
   const scrapedProxies = [];
-
-  for (const [i, proxy] of proxies.entries()) {
-    logger(i);
+  let index = 0;
+  for (const proxy of proxies) {
+    logger(index++);
     scrapedProxies.push(proxy);
   }
-
   return scrapedProxies;
 };
 
 const proxyParser = async (datas) => {
   const parsedData = datas.split(/\s+/);
   const ipPortPattern = /(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5})/;
-  const parsedProxies = [];
+  const uniqueParsedProxies = new Set();
   for (const data of parsedData) {
     const check = ipPortPattern.exec(data);
     if (!check) continue;
     const proxy = check[0];
-    parsedProxies.push(proxy);
+    uniqueParsedProxies.add(proxy);
   }
-  return await proxySaver(parsedProxies);
+  return await proxySaver(uniqueParsedProxies);
 };
 
 const proxyScraper = async (urls) => {
