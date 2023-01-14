@@ -1,7 +1,9 @@
 'use strict';
+
+require('dotenv').config();
 const axios = require('axios');
 const checkerOptions = require('../options/checkerRequestParam.js');
-const { default: PQueue } = require('p-queue');
+const pLimit = require('p-limit');
 const { yellow, green, red } = require('../helpers/Colorer.js');
 const {
   saveAlivesToLog,
@@ -10,10 +12,10 @@ const {
   removeFile
 } = require('../helpers/logSaver.js');
 
-const checkerLogger = (count) => {
+const checkerLogger = count => {
   let index = 0;
   const stats = { success: 0, failed: 0 };
-  return (isSuccess) => {
+  return isSuccess => {
     const progress = ((index++ / count) * 100).toFixed(1);
     process.stdout.write(
       yellow('[CHECKER WORKING]') +
@@ -26,7 +28,7 @@ const checkerLogger = (count) => {
       'Progress: ' + green(progress + '%') + '\r'
     );
     if (count === index) {
-      return console.log(
+      console.log(
         green('[CHECKER COMPLETED]') +
         ' Checking count: ' + green(count) +
         yellow('|') +
@@ -55,9 +57,7 @@ const makeRequest = async (
 
   try {
     const req = await axios.get('http://google.com', proxySettings);
-    if (req.status !== 200) {
-      return;
-    }
+    if (req.status !== 200) return;
     const geoReq = await axios.get(`http://ip-api.com/json/${ip}`, checkerOptions);
     const { countryCode } = geoReq.data;
     saveAlivesToLog(ip, port, countryCode);
@@ -67,27 +67,27 @@ const makeRequest = async (
   }
 };
 
-const proxyChecker = async (scrapedProxies) => {
+const proxyChecker = async scrapedProxies => {
   const uniqueScrapedProxies = new Set(scrapedProxies);
   const proxiesCount = uniqueScrapedProxies.size;
   const logger = checkerLogger(proxiesCount);
-  const threat = parseInt(process.env.CHECKER_THREAT) || 300;
-  console.log(threat);
-  const queue = new PQueue({ concurrency: threat });
+  const threat = parseInt(process.env.CHECKER_THREAT);
+  const queue = pLimit(threat);
   const promises = [];
+
   const logsFile = 'alive_proxies';
   const isExist = fileIsExist(logsFile);
-
   if (isExist) removeFile(logsFile);
   createFile(logsFile);
 
   for (const proxy of uniqueScrapedProxies) {
-    promises.push(queue.add(() =>
+    promises.push(queue(() =>
       makeRequest(proxy, logger)
     ));
   }
 
-  return await Promise.all(promises);
+  await Promise.all(promises);
+  return;
 };
 
 module.exports = proxyChecker;
