@@ -86,7 +86,7 @@ const proxyChecker = async scrapedProxies => {
     ));
   }
 
-  await Promise.all(promises);
+  await Promise.allSettled(promises);
   return;
 };
 
