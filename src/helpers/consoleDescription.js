@@ -13,8 +13,8 @@ const consoleDescription = () => {
                         (____/                          |_|            
   _________________________________________________________________________
                         `;
-  const repo = 'https://github.com/Alesko43/proxy-scraper-checker';
-  const author = 'Alesko';
+  const repo = 'https://github.com/timursevimli/proxy-scraper-checker';
+  const author = 'Timur Sevimli';
   const logInfo = 'For log files, see the directory named \'logs\'!';
 
   console.log(`
