@@ -6,7 +6,10 @@
   },
   "extends": "eslint:recommended",
   "parserOptions": {
-    "ecmaVersion": 2018
+    "ecmaVersion": 2020
+  },
+  "globals": {
+    "BigInt": true
   },
   "rules": {
     "indent": [
@@ -91,7 +94,7 @@
     "max-len": [
       "error",
       {
-        "code": 90,
+        "code": 80,
         "ignoreUrls": true
       }
     ],
@@ -110,6 +113,9 @@
       }
     ],
     "new-parens": [
+      "error"
+    ],
+    "no-lonely-if": [
       "error"
     ],
     "no-trailing-spaces": [
@@ -147,7 +153,7 @@
     "space-before-function-paren": [
       "error",
       {
-        "anonymous": "always",
+        "anonymous": "never",
         "named": "never",
         "asyncArrow": "always"
       }
@@ -207,7 +213,7 @@
     ],
     "arrow-parens": [
       "error",
-      "as-needed"
+      "always"
     ],
     "arrow-body-style": [
       "error",
