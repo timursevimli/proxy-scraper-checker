@@ -5,4 +5,5 @@ module.exports = {
   Collector: require('./Collector.js'),
   randomUAgent: require('./randomUAgent.js'),
   logger: require('./logger.js'),
+  getGeoInfo: require('./getGeoInfo.js'),
 };
