@@ -4,4 +4,5 @@ module.exports = {
   Queue: require('./Queue.js'),
   Collector: require('./Collector.js'),
   randomUAgent: require('./randomUAgent.js'),
+  logger: require('./logger.js'),
 };
