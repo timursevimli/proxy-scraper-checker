@@ -80,22 +80,3 @@ class Collector {
   }
 }
 module.exports = Collector;
-
-// const collect = (expected) => new Collector(expected);
-//
-// // Collect
-//
-// const collector = collect(3)
-//   .timeout(1000)
-//   .done((err, result) => {
-//     console.dir({ err, result });
-//   });
-//
-// const sourceForKey3 = (arg1, arg2, callback) => {
-//   console.dir({ arg1, arg2 });
-//   callback(null, 'key3');
-// };
-//
-// collector.collect('key1', null, 1);
-// collector.pick('key2', 2);
-// collector.take('key3', sourceForKey3, 'arg1', 'arg2');
