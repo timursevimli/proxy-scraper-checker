@@ -16,13 +16,7 @@ const checkerFunctions = {
   'node': [checkSocks4],
 };
 //TODO: DIVIDE TO THREADS!
-
-const finalize = () => {
-  console.log('All done!');
-  setTimeout(() => {
-    process.exit(0);
-  }, 1000);
-};
+//TODO: Change logger contracts!
 
 const sequentialCheck = async (curl = true) => {
   const checkerId = curl ? 'curl' : 'node';
@@ -33,37 +27,37 @@ const sequentialCheck = async (curl = true) => {
   // await checkHttps(scrapedProxies);
   await checkerS4(scrapedProxies);
   await checkerS5(scrapedProxies);
-  finalize();
 };
 
-const parallelCheck = (curl = true) => {
-  const checkerId = curl ? 'curl' : 'node';
-  const [checkerS4, checkerS5] = checkerFunctions[checkerId];
-  const scrapedProxies = scraper(proxySources);
-  scrapedProxies.then((proxies) => {
-    const http = checkHttp(proxies);
-    const https = checkHttps(proxies);
-    const socks4 = checkerS4(proxies);
-    const socks5 = checkerS5(proxies);
+const parallelCheck = (curl = true) =>
+  new Promise((resolve) => {
+    const checkerId = curl ? 'curl' : 'node';
+    const [checkerS4, checkerS5] = checkerFunctions[checkerId];
+    const scrapedProxies = scraper(proxySources);
+    scrapedProxies.then((proxies) => {
+      const http = checkHttp(proxies);
+      const https = checkHttps(proxies);
+      const socks4 = checkerS4(proxies);
+      const socks5 = checkerS5(proxies);
 
-    Promise.all([http, https, socks4, socks5])
-      .then(
-        () => finalize(),
-        (reason) => console.log({ reason })
-      );
+      Promise.all([http, https, socks4, socks5])
+        .then(resolve);
+    });
   });
-};
 
-const options = {
-  parallel: false,
-  curl: false,
+const finalize = () => {
+  console.log('All done!');
+  setTimeout(() => {
+    process.exit(0);
+  }, 1000);
 };
 
 const boot = ({ parallel = false, curl = false }) => {
-  parallel ? parallelCheck(curl) : sequentialCheck(curl);
+  const checker = parallel ? parallelCheck(curl) : sequentialCheck(curl);
+  checker.then(finalize);
 };
 
-boot(options);
+boot({ parallel: false, curl: false });
 
 process.on('uncaughtException', (err) => {
   console.error(err);
