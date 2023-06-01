@@ -6,4 +6,5 @@ module.exports = {
   randomUAgent: require('./randomUAgent.js'),
   logger: require('./logger.js'),
   getGeoInfo: require('./getGeoInfo.js'),
+  getDuration: require('./getDuration.js'),
 };
