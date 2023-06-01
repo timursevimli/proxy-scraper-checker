@@ -1,10 +1,71 @@
 'use strict';
-const { scraper, httpChecker } = require('./lib');
+const {
+  scraper,
+  checkHttp,
+  checkHttps,
+  checkSocks4,
+  checkCurlSocks4,
+  checkCurlSocks5
+} = require('./lib');
 const { getSource } = require('./utilities');
 const proxySources = getSource('proxy_sources.txt');
+const testSource = proxySources.splice(0, 3);
 
-(async () => {
-  const scrapedProxies = await scraper(proxySources, 10000);
-  httpChecker(scrapedProxies);
-  // console.dir({ scrapedProxies });
-})();
+const checkerFunctions = {
+  'curl': [checkCurlSocks4, checkCurlSocks5],
+  'node': [checkSocks4],
+};
+//TODO: DIVIDE TO THREADS!
+
+const finalize = () => {
+  console.log('All done!');
+  setTimeout(() => {
+    process.exit(0);
+  }, 1000);
+};
+
+const sequentialCheck = async (curl = true) => {
+  const checkerId = curl ? 'curl' : 'node';
+  const [checkerS4, checkerS5] = checkerFunctions[checkerId];
+  // const scrapedProxies = await scraper(proxySources);
+  const scrapedProxies = await scraper(testSource);
+  // await checkHttp(scrapedProxies);
+  // await checkHttps(scrapedProxies);
+  await checkerS4(scrapedProxies);
+  await checkerS5(scrapedProxies);
+  finalize();
+};
+
+const parallelCheck = (curl = true) => {
+  const checkerId = curl ? 'curl' : 'node';
+  const [checkerS4, checkerS5] = checkerFunctions[checkerId];
+  const scrapedProxies = scraper(proxySources);
+  scrapedProxies.then((proxies) => {
+    const http = checkHttp(proxies);
+    const https = checkHttps(proxies);
+    const socks4 = checkerS4(proxies);
+    const socks5 = checkerS5(proxies);
+
+    Promise.all([http, https, socks4, socks5])
+      .then(
+        () => finalize(),
+        (reason) => console.log({ reason })
+      );
+  });
+};
+
+const options = {
+  parallel: false,
+  curl: false,
+};
+
+const boot = ({ parallel = false, curl = false }) => {
+  parallel ? parallelCheck(curl) : sequentialCheck(curl);
+};
+
+boot(options);
+
+process.on('uncaughtException', (err) => {
+  console.error(err);
+  process.exit(1);
+});
