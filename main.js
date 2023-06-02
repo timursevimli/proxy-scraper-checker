@@ -1,4 +1,7 @@
 'use strict';
+const { getSource } = require('./utilities');
+const proxySources = getSource('proxy_sources.txt');
+const testSource = proxySources.splice(0, 3);
 const {
   scraper,
   checkHttp,
@@ -7,42 +10,21 @@ const {
   checkCurlSocks4,
   checkCurlSocks5
 } = require('./lib');
-const { getSource } = require('./utilities');
-const proxySources = getSource('proxy_sources.txt');
-const testSource = proxySources.splice(0, 3);
 
-const checkerFunctions = {
-  'curl': [checkCurlSocks4, checkCurlSocks5],
-  'node': [checkSocks4],
-};
-//TODO: DIVIDE TO THREADS!
+//TODO: Divide to threads!
 //TODO: Change logger contracts!
+//TODO: Remove checkers on lib and use one abstract checker with more jobs!
 
-const sequentialCheck = async (curl = true) => {
-  const checkerId = curl ? 'curl' : 'node';
-  const [checkerS4, checkerS5] = checkerFunctions[checkerId];
-  // const scrapedProxies = await scraper(proxySources);
-  const scrapedProxies = await scraper(testSource);
-  // await checkHttp(scrapedProxies);
-  // await checkHttps(scrapedProxies);
-  await checkerS4(scrapedProxies);
-  await checkerS5(scrapedProxies);
+const sequentialCheck = async (proxies, options, checkers) => {
+  for (const checker of checkers) {
+    await checker(proxies, options);
+  }
 };
 
-const parallelCheck = (curl = true) =>
+const parallelCheck = (proxies, options, checkers) =>
   new Promise((resolve) => {
-    const checkerId = curl ? 'curl' : 'node';
-    const [checkerS4, checkerS5] = checkerFunctions[checkerId];
-    const scrapedProxies = scraper(proxySources);
-    scrapedProxies.then((proxies) => {
-      const http = checkHttp(proxies);
-      const https = checkHttps(proxies);
-      const socks4 = checkerS4(proxies);
-      const socks5 = checkerS5(proxies);
-
-      Promise.all([http, https, socks4, socks5])
-        .then(resolve);
-    });
+    const promises = checkers.map((checker) => checker(proxies, options));
+    Promise.all(promises).finally(resolve);
   });
 
 const finalize = () => {
@@ -52,12 +34,41 @@ const finalize = () => {
   }, 1000);
 };
 
-const boot = ({ parallel = false, curl = false }) => {
-  const checker = parallel ? parallelCheck(curl) : sequentialCheck(curl);
-  checker.then(finalize);
+const socksCheckers = {
+  curl: [checkCurlSocks4, checkCurlSocks5],
+  node: [checkSocks4, () => { }],
 };
 
-boot({ parallel: false, curl: false });
+const channelsCount = {
+  parallel: { http: 150, socks: 20 },
+  sequential: { http: 300, socks: 40 },
+};
+
+const boot = async (
+  { type = 'parallel', useCurl = false, timeout = 10000 }
+) => {
+  const proxies = await scraper(testSource);
+  const socksFns = socksCheckers[useCurl ? 'curl' : 'node'];
+  const [checkSocks4, checkSocks5] = socksFns;
+  const checkers = [checkHttp, checkHttps, checkSocks4, checkSocks5];
+  const { http, socks } = channelsCount[type];
+
+  const checkOpts = {
+    timeout,
+    channels: { http, socks },
+  };
+
+  const checker = type === 'parallel' ? parallelCheck : sequentialCheck;
+  checker(proxies, checkOpts, checkers).then(finalize);
+};
+
+const bootOptions = {
+  type: 'parallel',
+  useCurl: true,
+  timeout: 10000,
+};
+
+boot(bootOptions);
 
 process.on('uncaughtException', (err) => {
   console.error(err);
