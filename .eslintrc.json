@@ -6,12 +6,13 @@
   },
   "extends": "eslint:recommended",
   "parserOptions": {
-    "ecmaVersion": 2020
+    "ecmaVersion": 13
   },
   "globals": {
     "BigInt": true
   },
   "rules": {
+    "no-useless-catch": "off",
     "indent": [
       "error",
       2
