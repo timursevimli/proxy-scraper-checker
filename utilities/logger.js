@@ -26,4 +26,5 @@ logger.colors = {
   normal: '\x1b[0m',
 };
 
-module.exports = logger;
+const file = __dirname + '/../logs/proxy-checker.log';
+module.exports = logger(file)(JSON.stringify)('ProxyChecker');
