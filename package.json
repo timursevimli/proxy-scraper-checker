@@ -1,11 +1,15 @@
 {
-  "name": "proxy_scraper_checker",
-  "description": "Best proxy scraper of develop with Node.js",
+  "name": "proxy-scraper",
+  "description": "Best proxy scraper of develop by Node.js",
   "version": "1.0.0",
   "keywords": [
     "proxy",
     "scraper",
     "checker",
+    "http",
+    "https",
+    "socks4",
+    "socks5",
     "nodejs"
   ],
   "license": "MIT",
