@@ -1,6 +1,6 @@
 {
   "name": "proxy_scraper_checker",
-  "description": "Best proxy scraper of its time, develop with Node.js",
+  "description": "Best proxy scraper of develop with Node.js",
   "version": "1.0.0",
   "keywords": [
     "proxy",
@@ -13,12 +13,12 @@
   "email": "svmlitimur@gmail.com",
   "url": "https://github.com/Alesko43/proxy-scraper-checker",
   "funding": {
-    "type": "individual",
+    "type": "coffee",
     "url": "https://www.buymeacoffee.com/alesko43"
   },
   "main": "main.js",
   "scripts": {
-    "start": "node ./src/main.js",
+    "start": "node main.js",
     "test": "eslint .",
     "fix": "eslint . --fix"
   }
