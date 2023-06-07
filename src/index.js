@@ -1,7 +1,5 @@
 'use strict';
 const { getSource } = require('./utilities');
-const proxySources = getSource('proxy_sources.txt');
-const testSource = proxySources.splice(0, 3);
 const tasks = require('./tasks');
 const { scraper, checker } = require('./lib');
 
@@ -28,11 +26,11 @@ const finalize = () => {
 
 const execution = {
   multi: {
-    channels: 20,
+    channels: 35,
     checker: parallelCheck,
   },
   single: {
-    channels: 100,
+    channels: 150,
     checker: sequentialCheck,
   }
 };
@@ -48,10 +46,16 @@ const filterTasks = (useCurl) => ({ name }) => {
   }
 };
 
-const boot = async (
-  { executionType = 'single', useCurl = true, timeout = 10000 } = {}
-) => {
-  const proxies = await scraper(testSource);
+const boot = async ({
+  executionType = 'single',
+  useCurl = true,
+  timeout = 10000,
+  source = 'proxy_sources.txt',
+  test = false,
+} = {}) => {
+  const proxySources = getSource(source);
+  const sources = test ? proxySources.splice(0, 3) : proxySources;
+  const proxies = await scraper(sources);
   const selectedTasks = Object.values(tasks).filter(filterTasks(useCurl));
   const settings = execution[executionType];
   if (settings) {

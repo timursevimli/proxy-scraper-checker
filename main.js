@@ -1,5 +1,5 @@
 'use strict';
 const boot = require('./src/index.js');
-const settings = require('./config/settings.json');
+const config = require('./config.json');
 
-boot(settings);
+boot(config);
