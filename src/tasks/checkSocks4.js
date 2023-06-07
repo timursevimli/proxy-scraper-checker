@@ -6,9 +6,16 @@ const { getGeoInfo, getDuration } = require('../utilities/');
 const checkSocks4 = (proxy, cb) => {
   const timeout = 10000;
   const [host, port] = proxy.split(':');
+
+  if (!host || !port) {
+    const err = new Error('Host or port undefined!');
+    cb(err);
+    return;
+  }
+
   const socket = new net.Socket();
 
-  const socks4Request = Buffer.from([
+  const socks4Handshake = Buffer.from([
     0x04, // Version SOCKS4
     0x01, // Command CONNECT
     port >> 8, port & 0xff, // Port divided 2 Byte
@@ -18,7 +25,7 @@ const checkSocks4 = (proxy, cb) => {
 
   const connectionTimeout = setTimeout(() => {
     socket.destroy();
-    const err = 'Socks4 connection timed out!';
+    const err = new Error('Socks4 connection timed out!');
     cb(err);
   }, timeout - 1);
 
@@ -26,7 +33,7 @@ const checkSocks4 = (proxy, cb) => {
 
   socket.connect(parseInt(port), host, () => {
     clearTimeout(connectionTimeout);
-    socket.write(socks4Request);
+    socket.write(socks4Handshake);
   });
 
   socket.on('data', (data) => {
@@ -43,7 +50,7 @@ const checkSocks4 = (proxy, cb) => {
         )
         .catch((err) => cb(err));
     } else {
-      const err = 'Socks4 proxy is offine!';
+      const err = 'Socks4 connection failed!';
       cb(err);
     }
     socket.end();
