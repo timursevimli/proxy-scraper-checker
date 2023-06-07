@@ -10,15 +10,15 @@ module.exports = (sources, { timeout = 10000, channels = 10 } = {}) =>
     const dc = new Collector(sources.length)
       .done((errors, results) => {
         if (Object.keys(errors).length > 0) console.error({ errors });
-        const res = new Set();
+        const scrapedProxies = new Set();
         for (const key in results) {
           const result = results[key];
           if (result.length > 0) {
-            result.forEach((data) => res.add(data));
+            result.forEach((data) => scrapedProxies.add(data));
           }
         }
-        console.log('Scraper is done!', { size: res.size });
-        resolve(res);
+        console.log('Scraper is done!', { size: scrapedProxies.size });
+        resolve(scrapedProxies);
       });
     let i = 1;
     const queue = Queue.channels(channels)
