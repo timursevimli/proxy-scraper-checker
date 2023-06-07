@@ -44,6 +44,7 @@ const filterTasks = (useCurl) => ({ name }) => {
     }
     return true;
   }
+  return false;
 };
 
 const boot = async ({
