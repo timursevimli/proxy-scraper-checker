@@ -1,5 +1,11 @@
 'use strict';
-const { Collector, Queue, randomUAgent, logger } = require('../utilities/');
+const {
+  Collector,
+  Queue,
+  randomUAgent,
+  logger,
+  validateProxy
+} = require('../utilities/');
 
 const log = logger('scraper');
 const infoLog = log('info');
@@ -43,7 +49,11 @@ module.exports = (sources, { timeout = 10000, channels = 10 } = {}) =>
               for (const line of lines) {
                 const regex = /(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5})/;
                 const match = line.match(regex);
-                if (match) proxies.push(match[0]);
+                if (match) {
+                  const proxy = match[0];
+                  const isValidProxy = validateProxy(proxy);
+                  if (isValidProxy) proxies.push(proxy);
+                }
               }
               cb(null, proxies);
             },
