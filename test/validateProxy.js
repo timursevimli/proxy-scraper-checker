@@ -7,6 +7,7 @@ test('Valid IP:Port formats', () => {
   assert.strictEqual(validateProxy('127.0.0.1:8080'), true);
   assert.strictEqual(validateProxy('192.168.1.1:12345'), true);
   assert.strictEqual(validateProxy('10.0.0.1:80'), true);
+  assert.strictEqual(validateProxy('0.0.0.0:0'), true);
 });
 
 test('Invalid IP:Port formats', () => {
