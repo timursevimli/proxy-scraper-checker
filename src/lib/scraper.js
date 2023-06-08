@@ -55,7 +55,12 @@ module.exports = (sources, { timeout = 10000, channels = 10 } = {}) =>
                   if (isValidProxy) proxies.push(proxy);
                 }
               }
-              cb(null, proxies);
+              if (proxies.length > 0) {
+                cb(null, proxies);
+              } else {
+                const msg = `Proxies not found in url: ${url}`;
+                cb(msg);
+              }
             },
             (reason) => cb(reason))
           .catch((err) => cb(err));
