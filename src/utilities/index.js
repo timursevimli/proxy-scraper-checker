@@ -7,4 +7,5 @@ module.exports = {
   logger: require('./logger.js'),
   getGeoInfo: require('./getGeoInfo.js'),
   getDuration: require('./getDuration.js'),
+  validateProxy: require('./validateProxy.js'),
 };
