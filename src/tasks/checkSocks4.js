@@ -5,13 +5,14 @@ const { getGeoInfo, getDuration } = require('../utilities/');
 
 const checkSocks4 = (proxy, cb) => {
   const socket = new net.Socket();
-  const [host, port] = proxy;
+  const [host, port] = proxy.split(':');
+  const nPort = parseInt(port);
   const timeout = 10000;
 
   const socks4Handshake = Buffer.from([
     0x04, // Version SOCKS4
     0x01, // Command CONNECT
-    port >> 8, port & 0xff, // Port divided 2 Byte
+    nPort >> 8, nPort & 0xff, // Port divided 2 Byte
     0x00, 0x00, 0x00, 0x01, // ipAdress - 0.0.0.1
     0x00 // UserId (empyt)
   ]);
@@ -24,7 +25,7 @@ const checkSocks4 = (proxy, cb) => {
 
   const startTime = getDuration();
 
-  socket.connect(parseInt(port), host, () => {
+  socket.connect(nPort, host, () => {
     clearTimeout(connectionTimeout);
     socket.write(socks4Handshake);
   });

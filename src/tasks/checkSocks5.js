@@ -5,7 +5,8 @@ const { getGeoInfo, getDuration } = require('../utilities/');
 
 const checkSocks5 = (proxy, cb) => {
   const socket = new net.Socket();
-  const [host, port] = proxy;
+  const [host, port] = proxy.split(':');
+  const nPort = parseInt(port);
   const timeout = 10000;
 
   const socks5Handshake = Buffer.from([
@@ -22,7 +23,7 @@ const checkSocks5 = (proxy, cb) => {
 
   const startTime = getDuration();
 
-  socket.connect(parseInt(port), host, () => {
+  socket.connect(nPort, host, () => {
     clearTimeout(connectionTimeout);
     socket.write(socks5Handshake);
   });
