@@ -4,16 +4,9 @@ const net = require('node:net');
 const { getGeoInfo, getDuration } = require('../utilities/');
 
 const checkSocks4 = (proxy, cb) => {
-  const timeout = 10000;
-  const [host, port] = proxy.split(':');
-
-  if (!host || !port) {
-    const err = new Error('Host or port undefined!');
-    cb(err);
-    return;
-  }
-
   const socket = new net.Socket();
+  const [host, port] = proxy;
+  const timeout = 10000;
 
   const socks4Handshake = Buffer.from([
     0x04, // Version SOCKS4
