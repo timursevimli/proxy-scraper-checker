@@ -37,12 +37,7 @@ const execution = {
 
 const filterTasks = (useCurl) => ({ name }) => {
   if (name) {
-    if (name.includes('Socks')) {
-      return useCurl ?
-        name.includes('curl') :
-        !name.includes('curl');
-    }
-    return true;
+    return useCurl ? name.includes('curl') : !name.includes('curl');
   }
   return false;
 };
