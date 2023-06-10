@@ -6,7 +6,7 @@ const { getDuration, getGeoInfo } = require('../utilities');
 
 const curlHttps = (proxy, cb) => {
   const url = 'https://www.google.com';
-  const cmd = `curl ${url} -x ${proxy}:${url} --insecure`;
+  const cmd = `curl ${url} -x ${proxy} --insecure`;
   const duration = getDuration();
   exec(cmd, (err, stdout, stderr) => {
     if (err || stderr) {
