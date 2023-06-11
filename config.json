@@ -1,6 +1,5 @@
 {
   "executionType": "single",
-  "useCurl": false,
   "timeout": 10000,
   "source": "proxy_sources.txt",
   "test": false
