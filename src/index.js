@@ -3,8 +3,6 @@ const { getSource } = require('./utilities');
 const tasks = require('./tasks');
 const { scraper, checker } = require('./lib');
 
-//TODO: Divide to threads!
-
 const sequentialCheck = async (proxies, tasks, options) => {
   for (const task of tasks) {
     await checker(proxies, task, options);
@@ -35,16 +33,8 @@ const execution = {
   }
 };
 
-const filterTasks = (useCurl) => ({ name }) => {
-  if (name) {
-    return useCurl ? name.includes('curl') : !name.includes('curl');
-  }
-  return false;
-};
-
 const boot = async ({
   executionType = 'single',
-  useCurl = true,
   timeout = 10000,
   source = 'proxy_sources.txt',
   test = false,
@@ -52,11 +42,10 @@ const boot = async ({
   const proxySources = getSource(source);
   const sources = test ? proxySources.splice(0, 3) : proxySources;
   const proxies = await scraper(sources);
-  const selectedTasks = Object.values(tasks).filter(filterTasks(useCurl));
   const settings = execution[executionType];
   if (settings) {
     const { checker, channels } = settings;
-    await checker(proxies, selectedTasks, { timeout, channels });
+    await checker(proxies, Object.values(tasks), { timeout, channels });
     finalize();
   } else {
     const msg = 'Wrong executionType!';
