@@ -1,7 +1,7 @@
 'use strict';
 
 const net = require('node:net');
-const { getGeoInfo, getDuration } = require('../utilities/');
+const { getGeoInfo, getDuration } = require('../utils/');
 
 const checkSocks5 = (proxy, cb) => {
   const socket = new net.Socket();

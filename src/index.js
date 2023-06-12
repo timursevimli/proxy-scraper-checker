@@ -1,7 +1,8 @@
 'use strict';
-const { getSource } = require('./utilities');
-const tasks = require('./tasks');
-const { scraper, checker } = require('./lib');
+const { getSource } = require('./utils/');
+const checkers = require('./checkers/');
+const scraper = require('./scraper.js');
+const checker = require('./checker.js');
 
 const sequentialCheck = async (proxies, tasks, options) => {
   for (const task of tasks) {
@@ -45,7 +46,7 @@ const boot = async ({
   const settings = execution[executionType];
   if (settings) {
     const { checker, channels } = settings;
-    await checker(proxies, Object.values(tasks), { timeout, channels });
+    await checker(proxies, Object.values(checkers), { timeout, channels });
     finalize();
   } else {
     const msg = 'Wrong executionType!';

@@ -1,15 +1,15 @@
 'use strict';
-const { Queue, logger } = require('../utilities/');
+const { Queue, logger } = require('./utils/');
 
-module.exports = (proxies, task, options) =>
+module.exports = (proxies, checker, options) =>
   new Promise((resolve) => {
     const { channels = 20, timeout = 10000 } = options || {};
-    const name = task.name;
+    const name = checker.name;
     console.log(`${name} started!`);
     const log = logger(name);
     const queue = Queue.channels(channels)
       .timeout(timeout)
-      .process(task)
+      .process(checker)
       .success(log('info'))
       .failure(log('error'))
       .drain(() => {

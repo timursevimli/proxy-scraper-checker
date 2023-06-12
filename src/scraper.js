@@ -5,7 +5,7 @@ const {
   randomUAgent,
   logger,
   validateProxy
-} = require('../utilities/');
+} = require('./utils/');
 
 const log = logger('scraper');
 const infoLog = log('info');

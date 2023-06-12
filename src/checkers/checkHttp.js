@@ -1,12 +1,12 @@
 'use strict';
 
 const { Agent } = require('node:http');
-const { getDuration, getGeoInfo, randomUAgent } = require('../utilities');
+const { getDuration, getGeoInfo, randomUAgent } = require('../utils/');
 
-const checkHttps = (proxy, cb) => {
+const checkHttp = (proxy, cb) => {
   const timeout = 10000;
   const [host, port] = proxy.split(':');
-  const url = 'https://google.com';
+  const url = 'http://google.com';
   const agent = new Agent({
     keepAlive: false,
     // keepAliveMsecs: 1000,
@@ -42,4 +42,4 @@ const checkHttps = (proxy, cb) => {
     .catch((err) => cb(err));
 };
 
-module.exports = checkHttps;
+module.exports = checkHttp;

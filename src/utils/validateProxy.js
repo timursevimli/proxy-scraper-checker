@@ -1,5 +1,4 @@
 'use strict';
-
 module.exports = (proxy) => {
   const ipPort = proxy.split(':');
   if (ipPort.length !== 2) return false;

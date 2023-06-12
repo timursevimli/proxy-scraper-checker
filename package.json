@@ -23,6 +23,7 @@
   "main": "main.js",
   "scripts": {
     "start": "node main.js",
+    "test": "node test/testRunner.js",
     "lint": "eslint ."
   }
 }
