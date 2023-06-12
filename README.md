@@ -44,6 +44,7 @@ http://example.net
 ```bash
   npm start
 ```
+4. The logs will be recorded in the logs/proxy-scraper.log file. You can view the log file to track the execution and check for results or errors.
 ## Execution Options
 
 When running the proxy-scaper, you can specify the following options:
