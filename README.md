@@ -10,23 +10,14 @@ To install and use Proxy Scraper, follow these steps:
 
 1. Clone the repository using the command:
 ```bash 
-  npm install my-project
-  cd my-project
-```
-2. Navigate to the project folder:
-```bash
-    cd proxy-scraper
-```
-3. Install the dependencies by running the command:
-```bash
-npm install
+  git clone https://github.com/timursevimli/proxy-scraper/
 ```
 
 ## Usage
 
 To use Proxy Scraper, follow these steps:
 
-1. Create a text file that lists the websites to collect IP addresses and ports from. Each URL should be specified on a separate line. For example (proxy_sources.txt):
+1. Create a text file that lists the websites to collect IP addresses and ports from. Each URL should be specified on a separate line. For example (sources/proxy_sources.txt):
 ```bash
 https://example.com
 http://example.net
