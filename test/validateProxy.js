@@ -1,7 +1,7 @@
 'use strict';
 const test = require('node:test');
 const assert = require('node:assert');
-const validateProxy = require('../src/utilities/validateProxy.js');
+const validateProxy = require('../src/utils/validateProxy.js');
 
 test('Valid IP:Port formats', () => {
   assert.strictEqual(validateProxy('127.0.0.1:8080'), true);
