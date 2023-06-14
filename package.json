@@ -22,7 +22,7 @@
   },
   "main": "main.js",
   "scripts": {
-    "start": "node main.js",
+    "start": "node --no-warnings main.js",
     "test": "node test/testRunner.js",
     "lint": "eslint ."
   }
