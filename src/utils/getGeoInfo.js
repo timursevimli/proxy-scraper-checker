@@ -8,12 +8,14 @@ const serializeData = ({
   countryCode,
   region,
   regionName,
+  isp,
 }, host, port) => ({
   city,
   country,
   countryCode,
   region,
   regionName,
+  isp,
   host,
   port,
 });
