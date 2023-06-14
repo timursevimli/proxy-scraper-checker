@@ -1,5 +1,5 @@
 'use strict';
-const { getSource } = require('./utils/');
+const { getSource, logger } = require('./utils/');
 const checkers = require('./checkers/');
 const scraper = require('./scraper.js');
 const checker = require('./checker.js');
@@ -40,13 +40,26 @@ const boot = async ({
   source = 'proxy_sources.txt',
   test = false,
 } = {}) => {
+  const logFile = __dirname + '/../logs/proxy-checker.log';
+  const appLogger = logger(logFile)(JSON.stringify)('ProxyChecker');
+
+  process.on('uncaughtExceptionMonitor', (err) => {
+    const errorLog = appLogger('boot')('error');
+    errorLog(err);
+  });
+
   const proxySources = getSource(source);
   const sources = test ? proxySources.splice(0, 3) : proxySources;
-  const proxies = await scraper(sources);
+  const proxies = await scraper(sources, appLogger);
   const settings = execution[executionType];
   if (settings) {
     const { checker, channels } = settings;
-    await checker(proxies, Object.values(checkers), { timeout, channels });
+    await checker(
+      proxies,
+      Object.values(checkers),
+      appLogger,
+      { timeout, channels }
+    );
     finalize();
   } else {
     const msg = 'Wrong executionType!';
@@ -55,8 +68,8 @@ const boot = async ({
 };
 
 process.on('uncaughtException', (err) => {
-  console.error(err);
-  process.exit(1);
+  console.error(err.stack || err);
+  setTimeout(process.exit, 0, 1);
 });
 
 module.exports = boot;
