@@ -13,7 +13,7 @@ module.exports = (proxies, checker, logger, options) =>
       .timeout(timeout)
       .process(checker)
       .success(infoLog)
-      .failure(errorLog)
+      .failure((err) => errorLog(err?.message))
       .drain(() => {
         console.log(`${name} is done!`);
         resolve();

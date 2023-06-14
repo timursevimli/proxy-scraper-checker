@@ -5,12 +5,8 @@ const {
   randomUAgent,
   validateProxy
 } = require('./utils/');
-module.exports = (sources, logger, { timeout = 10000, channels = 10 } = {}) => {
-  const log = logger('scraper');
-  const infoLog = log('info');
-  const errorLog = log('error');
-
-  return new Promise((resolve) => {
+module.exports = (sources, logger, { timeout = 10000, channels = 10 } = {}) =>
+  new Promise((resolve) => {
     const dc = new Collector(sources.length)
       .done((errors, results) => {
         if (Object.keys(errors).length > 0) console.error({ errors });
@@ -24,6 +20,9 @@ module.exports = (sources, logger, { timeout = 10000, channels = 10 } = {}) => {
         console.log('Scraper is done!', { size: scrapedProxies.size });
         resolve(scrapedProxies);
       });
+    const log = logger('scraper');
+    const infoLog = log('info');
+    const errorLog = log('error');
     let i = 1;
     const queue = Queue.channels(channels)
       .timeout(timeout)
@@ -40,7 +39,8 @@ module.exports = (sources, logger, { timeout = 10000, channels = 10 } = {}) => {
         fetch(url, options)
           .then(
             (res) => res.text(),
-            (reason) => cb(reason))
+            (reason) => cb(reason)
+          )
           .then(
             (data) => {
               const lines = data.split('\n');
@@ -56,11 +56,12 @@ module.exports = (sources, logger, { timeout = 10000, channels = 10 } = {}) => {
               if (proxies.length > 0) {
                 cb(null, proxies);
               } else {
-                const msg = `Proxies not found in url: ${url}`;
-                cb(msg);
+                const err = new Error(`Proxies not found in url: ${url}`);
+                cb(err);
               }
             },
-            (reason) => cb(reason))
+            (reason) => cb(reason)
+          )
           .catch((err) => cb(err));
       })
       .success((res) => {
@@ -68,11 +69,10 @@ module.exports = (sources, logger, { timeout = 10000, channels = 10 } = {}) => {
         dc.pick(`Task${i}`, res);
       })
       .failure((err) => {
-        errorLog(err);
-        dc.fail(`Task${i}`, err);
+        errorLog(err?.message);
+        dc.fail(`Task${i}`, err?.message);
       })
       .done(() => i++);
 
     sources.forEach((source) => queue.add(source));
   });
-};
