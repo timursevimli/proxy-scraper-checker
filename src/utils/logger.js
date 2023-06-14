@@ -1,6 +1,6 @@
 'use strict';
 const fs = require('node:fs');
-const path = require('node:path');
+
 // file => serializer => app => module => kind => msg
 const logger = (file) => {
   const { isTTY } = file;
@@ -27,5 +27,4 @@ logger.colors = {
   normal: '\x1b[0m',
 };
 
-const file = path.join(__dirname + '../../../logs/proxy-checker.log');
-module.exports = logger(file)(JSON.stringify)('ProxyChecker');
+module.exports = logger;
