@@ -1,19 +1,21 @@
 'use strict';
-const { Queue, logger } = require('./utils/');
+const { Queue } = require('./utils/');
 
-module.exports = (proxies, checker, options) =>
+module.exports = (proxies, checker, logger, options) =>
   new Promise((resolve) => {
     const { channels = 20, timeout = 10000 } = options || {};
     const name = checker.name;
     console.log(`${name} started!`);
     const log = logger(name);
+    const infoLog = log('info');
+    const errorLog = log('error');
     const queue = Queue.channels(channels)
       .timeout(timeout)
       .process(checker)
-      .success(log('info'))
-      .failure(log('error'))
+      .success(infoLog)
+      .failure(errorLog)
       .drain(() => {
-        console.log(`${name.toUpperCase()} is done!`);
+        console.log(`${name} is done!`);
         resolve();
       });
 

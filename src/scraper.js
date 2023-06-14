@@ -3,16 +3,14 @@ const {
   Collector,
   Queue,
   randomUAgent,
-  logger,
   validateProxy
 } = require('./utils/');
+module.exports = (sources, logger, { timeout = 10000, channels = 10 } = {}) => {
+  const log = logger('scraper');
+  const infoLog = log('info');
+  const errorLog = log('error');
 
-const log = logger('scraper');
-const infoLog = log('info');
-const errorLog = log('error');
-
-module.exports = (sources, { timeout = 10000, channels = 10 } = {}) =>
-  new Promise((resolve) => {
+  return new Promise((resolve) => {
     const dc = new Collector(sources.length)
       .done((errors, results) => {
         if (Object.keys(errors).length > 0) console.error({ errors });
@@ -77,3 +75,4 @@ module.exports = (sources, { timeout = 10000, channels = 10 } = {}) =>
 
     sources.forEach((source) => queue.add(source));
   });
+};
