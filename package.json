@@ -1,6 +1,6 @@
 {
   "name": "proxy-scraper",
-  "description": "Best proxy scraper of develop by Node.js",
+  "description": "Multifunctional proxy scraper of develop by Node.js",
   "version": "1.0.0",
   "keywords": [
     "proxy",
@@ -10,7 +10,8 @@
     "https",
     "socks4",
     "socks5",
-    "nodejs"
+    "nodejs",
+    "parallel"
   ],
   "license": "MIT",
   "author": "Timur Sevimli",
