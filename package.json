@@ -25,5 +25,8 @@
     "start": "node --no-warnings main.js",
     "test": "node test/testRunner.js",
     "lint": "eslint ."
+  },
+  "devDependencies": {
+    "eslint": "^8.42.0"
   }
 }
