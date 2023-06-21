@@ -1,6 +1,5 @@
 'use strict';
 const { performance } = require('node:perf_hooks');
-module.exports = () => {
-  const start = performance.now();
-  return () => Math.floor(performance.now() - start);
-};
+module.exports = (begin) => (
+  begin ? Math.floor(performance.now() - begin) : performance.now()
+);
