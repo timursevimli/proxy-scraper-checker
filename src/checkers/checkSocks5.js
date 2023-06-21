@@ -21,7 +21,7 @@ const checkSocks5 = (proxy, cb) => {
     cb(err);
   }, timeout - 1);
 
-  const startTime = getDuration();
+  const begin = getDuration();
 
   socket.connect(nPort, host, () => {
     clearTimeout(connectionTimeout);
@@ -31,7 +31,7 @@ const checkSocks5 = (proxy, cb) => {
   socket.on('data', (data) => {
     const [version, status] = data;
     if (version === 0x05 && status === 0x00) {
-      const duration = startTime();
+      const duration = getDuration(begin);
       getGeoInfo(proxy)
         .then(
           (res) => {

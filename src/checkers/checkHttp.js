@@ -23,14 +23,14 @@ const checkHttp = (proxy, cb) => {
       'Content-Type': 'application/json',
     }
   };
-  const duration = getDuration();
+  const begin = getDuration();
   fetch(url, options)
     .then(
       (res) => {
         if (res.status === 200) {
           getGeoInfo(proxy).then(
             (res) => {
-              res.duration = duration();
+              res.duration = getDuration(begin);
               cb(null, res);
             },
             (reason) => cb(reason)
