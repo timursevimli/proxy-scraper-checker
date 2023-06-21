@@ -3,7 +3,7 @@ const { Queue } = require('./utils/');
 
 module.exports = (proxies, checker, logger, options) =>
   new Promise((resolve) => {
-    const { channels = 20, timeout = 10000 } = options || {};
+    const { channels, timeout } = options;
     const name = checker.name;
     console.log(`${name} started!`);
     const log = logger(name);
