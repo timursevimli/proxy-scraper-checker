@@ -1,6 +1,7 @@
 {
-  "executionType": "single",
+  "mode": "single",
   "timeout": 10000,
   "source": "proxy_sources.txt",
-  "test": false
+  "test": false,
+  "channels": 100
 }
