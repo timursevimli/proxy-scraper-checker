@@ -25,10 +25,11 @@ http://example.net
 2. Edit the config.json file to configure the script execution and proxy checking options.
 ```javascript
 {
-  "executionType": "single", // or "multi"
+  "mode": "single",
   "timeout": 10000,
   "source": "proxy_sources.txt",
-  "test": false // or true
+  "test": false,
+  "channels": 100
 }
 ```
 3. Run the script by executing the command:
@@ -40,13 +41,15 @@ http://example.net
 
 When running the proxy-scaper, you can specify the following options:
 
-* executionType (default: 'single'): The type of proxy checking execution. Available values are 'single' for sequential checking and 'multi' for parallel checking.
+* mode< string >(default: 'single'): The type of proxy checking execution. Available values are 'single' for sequential checking and 'multi' for parallel checking.
 
-* timeout (default: 10000): The timeout for each proxy check in milliseconds.
+* timeout< number >(default: 10000): The timeout for each proxy check in milliseconds.
 
-* source (default: 'proxy_sources.txt'): The path to the file containing the websites to collect IP addresses and ports from.
+* source< string >(default: 'proxy_sources.txt'): The path to the file containing the websites to collect IP addresses and ports from.
 
-* test (default: false): A flag indicating whether to run in test mode (checking only a few websites).
+* test< boolean >(default: false): A flag indicating whether to run in test mode (checking only a few websites).
+
+* channels< number >(default: 100) This property limits the number of operations and provides load balance in the application.
 
 ## Contribution
 
