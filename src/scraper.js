@@ -1,10 +1,7 @@
 'use strict';
-const {
-  Collector,
-  Queue,
-  randomUAgent,
-  validateProxy
-} = require('./utils/');
+
+const { Collector, Queue, randomUAgent, validateProxy } = require('./utils/');
+
 module.exports = (sources, logger, { timeout = 10000, channels = 10 } = {}) =>
   new Promise((resolve) => {
     const dc = new Collector(sources.length)

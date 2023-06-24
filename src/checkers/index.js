@@ -1,4 +1,5 @@
 'use strict';
+
 module.exports = {
   checkHttp: require('./checkHttp.js'),
   checkHttps: require('./checkHttps.js'),

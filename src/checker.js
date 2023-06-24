@@ -1,4 +1,5 @@
 'use strict';
+
 const { Queue } = require('./utils/');
 
 module.exports = (proxies, checker, logger, options) =>

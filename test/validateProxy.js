@@ -1,4 +1,5 @@
 'use strict';
+
 const test = require('node:test');
 const assert = require('node:assert');
 const validateProxy = require('../src/utils/validateProxy.js');

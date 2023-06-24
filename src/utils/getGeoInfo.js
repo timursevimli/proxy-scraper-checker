@@ -1,4 +1,5 @@
 'use strict';
+
 const { Agent } = require('node:http');
 const randomUAgent = require('./randomUAgent.js');
 

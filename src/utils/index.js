@@ -1,4 +1,5 @@
 'use strict';
+
 module.exports = {
   getSource: require('./getSource.js'),
   Queue: require('./Queue.js'),
