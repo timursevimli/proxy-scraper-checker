@@ -38,7 +38,17 @@ const finalize = () => {
   }, 1000);
 };
 
-const executionOptions = { multi: parallelCheck, single: sequentialCheck };
+const executionOptions = {
+  multi: {
+    execution: parallelCheck,
+    chCalc: (ch, count) => (ch / count).toFixed(0)
+
+  },
+  single: {
+    execution: sequentialCheck,
+    chCalc: (ch) => ch,
+  }
+};
 
 const boot = async ({
   mode = 'single',
@@ -50,11 +60,13 @@ const boot = async ({
   const proxySources = await getSource(source);
   const sources = test ? proxySources.splice(0, 3) : proxySources;
   const proxies = await scraper(sources, appLogger);
-  const executioner = executionOptions[mode];
-  if (executioner) {
+  const { execution, chCalc } = executionOptions[mode];
+  if (execution) {
     const tasks = Object.values(checkers);
-    if (mode === 'multi') channels  = (channels / tasks.length).toFixed(0);
-    await executioner(proxies, tasks, appLogger, { timeout, channels });
+    await execution(proxies, tasks, appLogger, {
+      timeout,
+      channels: chCalc(channels, tasks.length)
+    });
     finalize();
   } else {
     const msg = 'Wrong mode, use \'single\' or \'multi\' mode in config.json!';
