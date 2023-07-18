@@ -17,7 +17,6 @@ process.on('uncaughtException', (err) => {
 });
 
 const sequentialCheck = async (proxies, tasks, logger, options) => {
-  console.log({ tasks, options });
   for (const task of tasks) {
     await checker(proxies, task, logger, options);
   }
