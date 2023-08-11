@@ -6,17 +6,6 @@ const checkers = require('./checkers/');
 const scraper = require('./scraper.js');
 const checker = require('./checker.js');
 
-const logFile = __dirname + '/../logs/proxy-checker.log';
-const appLogger = logger(logFile)(JSON.stringify)('ProxyChecker');
-const errorLog = appLogger('main')('error');
-
-process.on('uncaughtExceptionMonitor', errorLog);
-process.on('uncaughtException', (err) => {
-  console.error(err.stack || err);
-  errorLog(err);
-  setTimeout(process.exit, 0, 1);
-});
-
 const sequentialCheck = async (proxies, tasks, logger, options) => {
   for (const task of tasks) {
     await checker(proxies, task, logger, options);
@@ -31,11 +20,10 @@ const parallelCheck = (proxies, tasks, logger, options) =>
     Promise.all(promises).finally(resolve);
   });
 
-const finalize = () => {
-  console.log('All done!');
-  setTimeout(() => {
-    process.exit(0);
-  }, 1000);
+const finalize = async () => {
+  logger.show('system', 'All done!');
+  await logger.close();
+  process.exit(0);
 };
 
 const executionOptions = {
@@ -58,19 +46,36 @@ const boot = async ({
 } = {}) => {
   const proxySources = await getSource(source);
   const sources = test ? proxySources.splice(0, 3) : proxySources;
-  const proxies = await scraper(sources, appLogger);
+  const proxies = await scraper(sources);
   const { execution, chCalc } = executionOptions[mode];
-  if (execution) {
-    const tasks = Object.values(checkers);
-    await execution(proxies, tasks, appLogger, {
-      timeout,
-      channels: chCalc(channels, tasks.length),
-    });
-    finalize();
-  } else {
-    const msg = "Wrong mode, use 'single' or 'multi' mode in config.json!";
+  if (!execution) {
+    const msg = 'Wrong mode, use \'single\' or \'multi\' mode in config.json!';
     throw new Error(msg);
   }
+  const tasks = Object.values(checkers);
+  await execution(proxies, tasks, {
+    timeout,
+    channels: chCalc(channels, tasks.length),
+  });
+  finalize();
 };
+
+process.on('uncaughtExceptionMonitor', (err) => {
+  logger.show('error', err.message || err);
+});
+
+process.on('uncaughtException', (err) => {
+  logger.error(err);
+  setTimeout(async () => {
+    await logger.close();
+    process.exit(1);
+  }, 0);
+});
+
+process.on('SIGINT', async () => {
+  logger.show('system', 'EXITING...');
+  await logger.close();
+  process.exit(0);
+});
 
 module.exports = boot;

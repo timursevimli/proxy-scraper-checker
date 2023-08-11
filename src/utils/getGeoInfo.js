@@ -3,20 +3,18 @@
 const { Agent } = require('node:http');
 const randomUAgent = require('./randomUAgent.js');
 
-const serializeData = (
-  { city, country, countryCode, region, regionName, isp },
-  host,
-  port,
-) => ({
-  city,
-  country,
-  countryCode,
-  region,
-  regionName,
-  isp,
-  host,
-  port,
-});
+const serializeData = (data, host, port) => {
+  const { city, country, countryCode, region, regionName, isp } = data;
+  return `
+    ${host}:${port}
+    ${countryCode}
+    ${country}
+    ${city}
+    ${region}
+    ${regionName}
+    ${isp}
+    `;
+};
 
 module.exports = (proxy, useProxy = false) =>
   new Promise((resolve, reject) => {
@@ -46,27 +44,21 @@ module.exports = (proxy, useProxy = false) =>
       options.agent = agent;
     }
     fetch(url, options)
-      .then(
-        (res) => {
-          if (res.status === 200) {
-            res
-              .json()
-              .then(
-                (data) => {
-                  if (data) {
-                    const result = serializeData(data, host, port);
-                    resolve(result);
-                  } else {
-                    const err = 'Geo data not found!';
-                    reject(new Error(err));
-                  }
-                },
-                (reason) => reject(reason),
-              )
-              .catch((err) => reject(err));
-          }
-        },
-        (reason) => reject(reason),
-      )
-      .catch((err) => reject(err));
+      .then((res) => {
+        if (res.status === 200) {
+          res
+            .json()
+            .then((data) => {
+              if (data) {
+                const result = serializeData(data, host, port);
+                resolve(result);
+              } else {
+                const err = 'Geo data not found!';
+                reject(new Error(err));
+              }
+            }, reject)
+            .catch(reject);
+        }
+      }, reject)
+      .catch(reject);
   });

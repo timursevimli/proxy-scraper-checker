@@ -1,25 +1,27 @@
 'use strict';
 
-const { Collector, Queue } = require('./lib');
+const { Collector, Queue, logger } = require('./lib');
 const { randomUAgent, validateProxy } = require('./utils/');
 
-module.exports = (sources, logger, { timeout = 10000, channels = 10 } = {}) =>
+module.exports = (sources, { timeout = 10000, channels = 10 } = {}) =>
   new Promise((resolve) => {
     const dc = new Collector(sources.length).done((errors, results) => {
-      if (Object.keys(errors).length > 0) console.error({ errors });
+      for (const key in errors) {
+        const error = errors[key];
+        logger.show('debug', error);
+      }
       const scrapedProxies = new Set();
       for (const key in results) {
         const result = results[key];
         if (result.length > 0) {
-          result.forEach((data) => scrapedProxies.add(data));
+          for (const data of result) {
+            scrapedProxies.add(data);
+          }
         }
       }
-      console.log('Scraper is done!', { size: scrapedProxies.size });
+      logger.show('system', `Scraper is done! Founded: ${scrapedProxies.size}`);
       resolve(scrapedProxies);
     });
-    const log = logger('scraper');
-    const infoLog = log('info');
-    const errorLog = log('error');
     let i = 1;
     const queue = Queue.channels(channels)
       .timeout(timeout)
@@ -61,15 +63,9 @@ module.exports = (sources, logger, { timeout = 10000, channels = 10 } = {}) =>
           )
           .catch((err) => cb(err));
       })
-      .success((res) => {
-        infoLog(res);
-        dc.pick(`Task${i}`, res);
-      })
-      .failure((err) => {
-        errorLog(err?.message);
-        dc.fail(`Task${i}`, err?.message);
-      })
-      .done(() => i++);
+      .success((res) => void dc.pick(`Task${i}`, res))
+      .failure((err) => void dc.fail(`Task${i}`, err?.message))
+      .done(() => void i++);
 
-    sources.forEach((source) => queue.add(source));
+    for (const source of sources) queue.add(source);
   });

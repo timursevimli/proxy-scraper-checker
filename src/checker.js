@@ -1,24 +1,21 @@
 'use strict';
 
-const { Queue } = require('./lib/');
+const { Queue, logger } = require('./lib/');
 
-module.exports = (proxies, checker, logger, options) =>
+module.exports = (proxies, checker, options) =>
   new Promise((resolve) => {
     const { channels, timeout } = options;
-    const name = checker.name;
-    console.log(`${name} started!`);
-    const log = logger(name);
-    const infoLog = log('info');
-    const errorLog = log('error');
+    const name = checker.name.toUpperCase();
+    logger.show('system', `${name} started!`);
     const queue = Queue.channels(channels)
       .timeout(timeout)
       .process(checker)
-      .success(infoLog)
-      .failure((err) => errorLog(err?.message))
+      .success((res) => logger.log(res))
+      // .failure((err) => void logger.error(err.message))
       .drain(() => {
-        console.log(`${name} is done!`);
+        logger.show('system', `${name} is done!`);
         resolve();
       });
 
-    proxies.forEach((proxy) => queue.add(proxy));
+    for (const proxy of proxies) queue.add(proxy);
   });

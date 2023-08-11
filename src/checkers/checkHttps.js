@@ -25,21 +25,16 @@ const checkHttps = (proxy, cb) => {
   };
   const begin = getDuration();
   fetch(url, options)
-    .then(
-      (res) => {
-        if (res.status === 200) {
-          getGeoInfo(proxy).then(
-            (res) => {
-              res.duration = getDuration(begin);
-              cb(null, res);
-            },
-            (reason) => cb(reason),
-          );
-        }
-      },
-      (reason) => cb(reason),
-    )
-    .catch((err) => cb(err));
+    .then((res) => {
+      if (res.status === 200) {
+        getGeoInfo(proxy).then((res) => {
+          const duration = getDuration(begin);
+          const result = `${res} ${duration}`;
+          cb(null, result);
+        }, cb);
+      }
+    }, cb)
+    .catch(cb);
 };
 
 module.exports = checkHttps;
