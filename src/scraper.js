@@ -19,7 +19,8 @@ module.exports = (sources, { timeout = 10000, channels = 10 } = {}) =>
           }
         }
       }
-      logger.show('system', `Scraper is done! Founded: ${scrapedProxies.size}`);
+      const { size } = scrapedProxies;
+      logger.show('system', `Scraper is done! Proxy count: ${size}`);
       resolve(scrapedProxies);
     });
     let i = 1;
@@ -67,5 +68,6 @@ module.exports = (sources, { timeout = 10000, channels = 10 } = {}) =>
       .failure((err) => void dc.fail(`Task${i}`, err?.message))
       .done(() => void i++);
 
+    logger.show('system', 'Scraping started!');
     for (const source of sources) queue.add(source);
   });
