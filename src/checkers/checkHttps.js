@@ -21,7 +21,7 @@ const checkHttps = (proxy, cb) => {
     headers: {
       'User-agent': randomUAgent(),
       'Content-Type': 'application/json',
-    }
+    },
   };
   const begin = getDuration();
   fetch(url, options)
@@ -33,11 +33,11 @@ const checkHttps = (proxy, cb) => {
               res.duration = getDuration(begin);
               cb(null, res);
             },
-            (reason) => cb(reason)
+            (reason) => cb(reason),
           );
         }
       },
-      (reason) => cb(reason)
+      (reason) => cb(reason),
     )
     .catch((err) => cb(err));
 };

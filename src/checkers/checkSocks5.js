@@ -12,7 +12,7 @@ const checkSocks5 = (proxy, cb) => {
   const socks5Handshake = Buffer.from([
     0x05, // Version SOCKS5
     0x01, // Number of authentication methods supported
-    0x00 // No authentication
+    0x00, // No authentication
   ]);
 
   const connectionTimeout = setTimeout(() => {
@@ -38,7 +38,7 @@ const checkSocks5 = (proxy, cb) => {
             res.duration = duration;
             cb(null, res);
           },
-          (reason) => cb(reason)
+          (reason) => cb(reason),
         )
         .catch((err) => cb(err));
     } else {

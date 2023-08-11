@@ -1,6 +1,6 @@
 'use strict';
 
-const { Queue } = require('./utils/');
+const { Queue } = require('./lib/');
 
 module.exports = (proxies, checker, logger, options) =>
   new Promise((resolve) => {

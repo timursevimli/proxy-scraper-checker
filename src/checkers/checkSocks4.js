@@ -12,9 +12,13 @@ const checkSocks4 = (proxy, cb) => {
   const socks4Handshake = Buffer.from([
     0x04, // Version SOCKS4
     0x01, // Command CONNECT
-    nPort >> 8, nPort & 0xff, // Port divided 2 Byte
-    0x00, 0x00, 0x00, 0x01, // ipAdress - 0.0.0.1
-    0x00 // UserId (empyt)
+    nPort >> 8,
+    nPort & 0xff, // Port divided 2 Byte
+    0x00,
+    0x00,
+    0x00,
+    0x01, // ipAdress - 0.0.0.1
+    0x00, // UserId (empyt)
   ]);
 
   const connectionTimeout = setTimeout(() => {
@@ -40,7 +44,7 @@ const checkSocks4 = (proxy, cb) => {
             res.duration = duration;
             cb(null, res);
           },
-          (reason) => cb(reason)
+          (reason) => cb(reason),
         )
         .catch((err) => cb(err));
     } else {

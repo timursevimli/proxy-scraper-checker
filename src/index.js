@@ -1,6 +1,7 @@
 'use strict';
 
-const { getSource, logger } = require('./utils/');
+const { getSource } = require('./utils/');
+const { logger } = require('./lib');
 const checkers = require('./checkers/');
 const scraper = require('./scraper.js');
 const checker = require('./checker.js');
@@ -24,8 +25,8 @@ const sequentialCheck = async (proxies, tasks, logger, options) => {
 
 const parallelCheck = (proxies, tasks, logger, options) =>
   new Promise((resolve) => {
-    const promises = tasks.map(
-      (task) => checker(proxies, task, logger, options)
+    const promises = tasks.map((task) =>
+      checker(proxies, task, logger, options),
     );
     Promise.all(promises).finally(resolve);
   });
@@ -40,13 +41,12 @@ const finalize = () => {
 const executionOptions = {
   multi: {
     execution: parallelCheck,
-    chCalc: (ch, count) => (ch / count).toFixed(0)
-
+    chCalc: (ch, count) => (ch / count).toFixed(0),
   },
   single: {
     execution: sequentialCheck,
     chCalc: (ch) => ch,
-  }
+  },
 };
 
 const boot = async ({
@@ -64,11 +64,11 @@ const boot = async ({
     const tasks = Object.values(checkers);
     await execution(proxies, tasks, appLogger, {
       timeout,
-      channels: chCalc(channels, tasks.length)
+      channels: chCalc(channels, tasks.length),
     });
     finalize();
   } else {
-    const msg = 'Wrong mode, use \'single\' or \'multi\' mode in config.json!';
+    const msg = "Wrong mode, use 'single' or 'multi' mode in config.json!";
     throw new Error(msg);
   }
 };

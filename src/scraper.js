@@ -1,22 +1,22 @@
 'use strict';
 
-const { Collector, Queue, randomUAgent, validateProxy } = require('./utils/');
+const { Collector, Queue } = require('./lib');
+const { randomUAgent, validateProxy } = require('./utils/');
 
 module.exports = (sources, logger, { timeout = 10000, channels = 10 } = {}) =>
   new Promise((resolve) => {
-    const dc = new Collector(sources.length)
-      .done((errors, results) => {
-        if (Object.keys(errors).length > 0) console.error({ errors });
-        const scrapedProxies = new Set();
-        for (const key in results) {
-          const result = results[key];
-          if (result.length > 0) {
-            result.forEach((data) => scrapedProxies.add(data));
-          }
+    const dc = new Collector(sources.length).done((errors, results) => {
+      if (Object.keys(errors).length > 0) console.error({ errors });
+      const scrapedProxies = new Set();
+      for (const key in results) {
+        const result = results[key];
+        if (result.length > 0) {
+          result.forEach((data) => scrapedProxies.add(data));
         }
-        console.log('Scraper is done!', { size: scrapedProxies.size });
-        resolve(scrapedProxies);
-      });
+      }
+      console.log('Scraper is done!', { size: scrapedProxies.size });
+      resolve(scrapedProxies);
+    });
     const log = logger('scraper');
     const infoLog = log('info');
     const errorLog = log('error');
@@ -36,7 +36,7 @@ module.exports = (sources, logger, { timeout = 10000, channels = 10 } = {}) =>
         fetch(url, options)
           .then(
             (res) => res.text(),
-            (reason) => cb(reason)
+            (reason) => cb(reason),
           )
           .then(
             (data) => {
@@ -57,7 +57,7 @@ module.exports = (sources, logger, { timeout = 10000, channels = 10 } = {}) =>
                 cb(err);
               }
             },
-            (reason) => cb(reason)
+            (reason) => cb(reason),
           )
           .catch((err) => cb(err));
       })
