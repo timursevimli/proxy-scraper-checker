@@ -25,9 +25,11 @@
   "scripts": {
     "start": "node --no-warnings main.js",
     "test": "node test/testRunner.js",
-    "lint": "eslint ."
+    "lint": "eslint . && prettier -c '**/*.js' '**/*.json' '**/*.md'",
+    "fmt": "prettier --write '**/*.js' '**/*.json' '**/*.md'"
   },
   "devDependencies": {
-    "eslint": "^8.42.0"
+    "eslint": "^8.46.0",
+    "prettier": "^3.0.1"
   }
 }
