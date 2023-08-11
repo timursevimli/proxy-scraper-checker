@@ -10,9 +10,5 @@ for (const file of testFiles) {
   if (__filename.includes(file)) continue;
   const filePath = path.join(__dirname, file);
   console.log(`Running tests in ${file}`);
-  try {
-    require(filePath);
-  } catch (e) {
-    throw e;
-  }
+  require(filePath);
 }
