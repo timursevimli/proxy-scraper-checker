@@ -6,13 +6,13 @@ const checkers = require('./checkers/');
 const scraper = require('./scraper.js');
 const checker = require('./checker.js');
 
-const sequentialCheck = async (proxies, tasks, logger, options) => {
+const seqCheck = async (proxies, tasks, logger, options) => {
   for (const task of tasks) {
     await checker(proxies, task, logger, options);
   }
 };
 
-const parallelCheck = (proxies, tasks, logger, options) =>
+const parCheck = (proxies, tasks, logger, options) =>
   new Promise((resolve) => {
     const promises = tasks.map((task) =>
       checker(proxies, task, logger, options),
@@ -26,37 +26,32 @@ const finalize = async () => {
   process.exit(0);
 };
 
-const executionOptions = {
+const executorOptions = {
   multi: {
-    execution: parallelCheck,
-    chCalc: (ch, count) => (ch / count).toFixed(0),
+    executor: parCheck,
+    getChannel: (ch, count) => (ch / count).toFixed(0),
   },
   single: {
-    execution: sequentialCheck,
-    chCalc: (ch) => ch,
+    executor: seqCheck,
+    getChannel: (ch) => ch,
   },
 };
 
-const boot = async ({
-  mode = 'single',
-  timeout = 10000,
-  source = 'proxy_sources.txt',
-  test = false,
-  channels = 100,
-} = {}) => {
+const executionException = () => {
+  const msg = "Wrong mode, use 'single' or 'multi' mode in config.json!";
+  throw new Error(msg);
+};
+
+const boot = async (options) => {
+  const { mode, timeout, source, channel } = options;
   const proxySources = await getSource(source);
-  const sources = test ? proxySources.splice(0, 3) : proxySources;
-  const proxies = await scraper(sources);
-  const { execution, chCalc } = executionOptions[mode];
-  if (!execution) {
-    const msg = 'Wrong mode, use \'single\' or \'multi\' mode in config.json!';
-    throw new Error(msg);
-  }
+  const proxies = await scraper(proxySources);
+  const executorOption = executorOptions[mode];
+  if (!executorOption) executionException();
+  const { executor, getChannel } = executorOption;
   const tasks = Object.values(checkers);
-  await execution(proxies, tasks, {
-    timeout,
-    channels: chCalc(channels, tasks.length),
-  });
+  const channels = getChannel(channel, tasks.length);
+  await executor(proxies, tasks, { timeout, channels });
   finalize();
 };
 
