@@ -19,6 +19,10 @@ module.exports = async (file) => {
   const rs = fs.createReadStream(filePath, 'utf8');
   rs.on('data', (chunk) => void (datas += chunk));
   return new Promise((resolve) => {
-    rs.on('end', () => void resolve(datas.split('\n')));
+    rs.on('end', () => {
+      const lines = datas.split('\n');
+      const result = lines.filter((line) => !!line);
+      resolve(result);
+    });
   });
 };
