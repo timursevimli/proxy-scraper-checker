@@ -3,11 +3,10 @@
 const net = require('node:net');
 const { getGeoInfo, getDuration } = require('../utils/');
 
-const checkSocks5 = (proxy, cb) => {
-  const socket = new net.Socket();
+const checkSocks5 = (task, cb) => {
+  const { proxy, timeout } = task;
   const [host, port] = proxy.split(':');
   const nPort = parseInt(port);
-  const timeout = 10000;
 
   const socks5Handshake = Buffer.from([
     0x05, // Version SOCKS5
@@ -15,42 +14,43 @@ const checkSocks5 = (proxy, cb) => {
     0x00, // No authentication
   ]);
 
-  const connectionTimeout = setTimeout(() => {
-    socket.destroy();
-    const err = 'Socks5 connection timed out!';
-    cb(err);
-  }, timeout - 1);
+  const signal = AbortSignal.timeout(timeout);
+  const socket = new net.Socket({ signal });
 
   const begin = getDuration();
+  let duration = undefined;
 
   socket.connect(nPort, host, () => {
-    clearTimeout(connectionTimeout);
+    duration = getDuration(begin);
     socket.write(socks5Handshake);
   });
 
-  socket.on('data', (data) => {
-    const [version, status] = data;
-    if (version === 0x05 && status === 0x00) {
-      const duration = getDuration(begin);
-      getGeoInfo(proxy)
-        .then(
-          (res) => {
-            res.duration = duration;
-            cb(null, res);
-          },
-          (reason) => cb(reason),
-        )
-        .catch((err) => cb(err));
-    } else {
-      const err = 'Socks5 connection failed!';
-      cb(err);
-    }
-    socket.end();
+  let res = undefined;
+  let err = null;
+
+  socket.on('error', (e) => void (err = e));
+  socket.on('close', () => {
+    if (err || res) return void cb(err, res);
+    err = new Error('Socket closed for unknown reason!');
+    cb(err, res);
   });
 
-  socket.on('error', (err) => {
-    socket.end();
-    cb(err);
+  socket.on('data', async (data) => {
+    const [version, status] = data;
+
+    if (version !== 0x05 && status !== 0x00) {
+      err = new Error('Socks5 connection failed!');
+      return void socket.end();
+    }
+
+    try {
+      const geoInfo = await getGeoInfo(proxy);
+      res = `SOCKS5 ${geoInfo} ${duration}`;
+    } catch (e) {
+      err = e;
+    } finally {
+      socket.destroy();
+    }
   });
 };
 

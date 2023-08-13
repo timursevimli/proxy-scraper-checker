@@ -3,11 +3,10 @@
 const net = require('node:net');
 const { getGeoInfo, getDuration } = require('../utils/');
 
-const checkSocks4 = (proxy, cb) => {
-  const socket = new net.Socket();
+const checkSocks4 = (task, cb) => {
+  const { proxy, timeout } = task;
   const [host, port] = proxy.split(':');
   const nPort = parseInt(port);
-  const timeout = 10000;
 
   const socks4Handshake = Buffer.from([
     0x04, // Version SOCKS4
@@ -21,42 +20,43 @@ const checkSocks4 = (proxy, cb) => {
     0x00, // UserId (empyt)
   ]);
 
-  const connectionTimeout = setTimeout(() => {
-    socket.destroy();
-    const err = new Error('Socks4 connection timed out!');
-    cb(err);
-  }, timeout - 1);
+  const signal = AbortSignal.timeout(timeout);
+  const socket = new net.Socket({ signal });
 
   const begin = getDuration();
+  let duration = undefined;
 
   socket.connect(nPort, host, () => {
-    clearTimeout(connectionTimeout);
+    duration = getDuration(begin);
     socket.write(socks4Handshake);
   });
 
-  socket.on('data', (data) => {
-    const [version, status] = data;
-    if (version === 0x00 && status === 0x5a) {
-      const duration = getDuration(begin);
-      getGeoInfo(proxy)
-        .then(
-          (res) => {
-            res.duration = duration;
-            cb(null, res);
-          },
-          (reason) => cb(reason),
-        )
-        .catch((err) => cb(err));
-    } else {
-      const err = 'Socks4 connection failed!';
-      cb(err);
-    }
-    socket.end();
+  let res = undefined;
+  let err = null;
+
+  socket.on('error', (e) => void (err = e));
+  socket.on('close', () => {
+    if (err || res) return void cb(err, res);
+    err = new Error('Socket closed for unknown reason!');
+    cb(err, res);
   });
 
-  socket.on('error', (err) => {
-    socket.end();
-    cb(err);
+  socket.on('data', async (data) => {
+    const [version, status] = data;
+
+    if (version !== 0x00 && status !== 0x5a) {
+      err = new Error('Socks4 connection failed!');
+      return void socket.end();
+    }
+
+    try {
+      const geoInfo = await getGeoInfo(proxy);
+      res = `SOCKS4 ${geoInfo} ${duration}`;
+    } catch (e) {
+      err = e;
+    } finally {
+      socket.destroy();
+    }
   });
 };
 

@@ -3,38 +3,33 @@
 const { Agent } = require('node:http');
 const { getDuration, getGeoInfo, randomUAgent } = require('../utils/');
 
-const checkHttp = (proxy, cb) => {
-  const timeout = 10000;
+const checkHttp = async (task, cb) => {
+  const { proxy, timeout } = task;
   const [host, port] = proxy.split(':');
-  const url = 'http://google.com';
-  const agent = new Agent({
-    keepAlive: false,
-    // keepAliveMsecs: 1000,
-    timeout,
-    host,
-    port,
-  });
+  const url = 'http://google.com/';
+
   const options = {
-    agent,
-    timeout,
     method: 'GET',
+    agent: new Agent({ host, port }),
+    signal: AbortSignal.timeout(timeout),
     headers: {
+      Connection: 'close',
       'User-agent': randomUAgent(),
-      'Content-Type': 'application/json',
     },
   };
+
   const begin = getDuration();
-  fetch(url, options)
-    .then((res) => {
-      if (res.status === 200) {
-        getGeoInfo(proxy).then((res) => {
-          const duration = getDuration(begin);
-          const result = `${res} ${duration}`;
-          cb(null, result);
-        }, cb);
-      }
-    }, cb)
-    .catch(cb);
+
+  try {
+    const res = await fetch(url, options);
+    if (res.status !== 200) return void cb(res.statusText);
+    const duration = getDuration(begin);
+    const geoInfo = await getGeoInfo(proxy);
+    const result = `HTTP ${geoInfo} ${duration}`;
+    cb(null, result);
+  } catch (e) {
+    cb(e);
+  }
 };
 
 module.exports = checkHttp;
