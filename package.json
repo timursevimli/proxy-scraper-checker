@@ -21,9 +21,12 @@
     "type": "coffee",
     "url": "https://www.buymeacoffee.com/alesko43"
   },
+  "engines": {
+    "node": "18 || 20"
+  },
   "main": "main.js",
   "scripts": {
-    "start": "node --no-warnings main.js",
+    "start": "node main.js",
     "test": "node test/testRunner.js",
     "lint": "eslint . && prettier -c '**/*.js' '**/*.json' '**/*.md'",
     "fmt": "prettier --write '**/*.js' '**/*.json' '**/*.md'"
