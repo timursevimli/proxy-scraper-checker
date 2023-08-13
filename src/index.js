@@ -1,22 +1,20 @@
 'use strict';
 
-const { getSource } = require('./utils/');
+const { getSource } = require('./utils');
 const { logger } = require('./lib');
-const checkers = require('./checkers/');
-const scraper = require('./scraper.js');
+const checkers = require('./checkers');
 const checker = require('./checker.js');
+const scraper = require('./scraper.js');
 
-const seqCheck = async (proxies, tasks, logger, options) => {
+const seqCheck = async (proxies, tasks, options) => {
   for (const task of tasks) {
-    await checker(proxies, task, logger, options);
+    await checker(proxies, task, options);
   }
 };
 
-const parCheck = (proxies, tasks, logger, options) =>
+const parCheck = (proxies, tasks, options) =>
   new Promise((resolve) => {
-    const promises = tasks.map((task) =>
-      checker(proxies, task, logger, options),
-    );
+    const promises = tasks.map((task) => checker(proxies, task, options));
     Promise.all(promises).finally(resolve);
   });
 
@@ -44,20 +42,18 @@ const executionException = () => {
 
 const boot = async (options) => {
   const { mode, timeout, source, channel } = options;
-  const proxySources = await getSource(source);
-  const proxies = await scraper(proxySources);
   const executorOption = executorOptions[mode];
   if (!executorOption) executionException();
   const { executor, getChannel } = executorOption;
   const tasks = Object.values(checkers);
   const channels = getChannel(channel, tasks.length);
+  const proxySources = await getSource(source);
+  const proxies = await scraper(proxySources, { timeout, channels });
   await executor(proxies, tasks, { timeout, channels });
   finalize();
 };
 
-process.on('uncaughtExceptionMonitor', (err) => {
-  logger.show('error', err.message || err);
-});
+process.on('uncaughtExceptionMonitor', (err) => void logger.show('error', err));
 
 process.on('uncaughtException', (err) => {
   logger.error(err);
