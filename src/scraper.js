@@ -3,69 +3,94 @@
 const { Collector, Queue, logger } = require('./lib');
 const { randomUAgent, validateProxy } = require('./utils/');
 
-module.exports = (sources, { timeout = 10000, channels = 10 } = {}) =>
+const showErrors = (errors) => {
+  for (const key in errors) {
+    const error = errors[key];
+    logger.show('debug', error);
+  }
+};
+
+const resultsHandler = (results) => {
+  const scrapedProxies = new Set();
+  for (const key in results) {
+    const result = results[key];
+    if (!result.length) continue;
+    for (const data of result) {
+      scrapedProxies.add(data);
+    }
+  }
+  return scrapedProxies;
+};
+
+const scrapeProxy = async (url, timeout, cb) => {
+  const proxies = [];
+  let err = null;
+
+  const controller = new AbortController();
+
+  const timer = setTimeout(() => {
+    controller.abort();
+    const msg = `Request timeout for this url: ${url}`;
+    cb(new Error(msg));
+  }, timeout);
+
+  const options = {
+    signal: controller.signal,
+    method: 'GET',
+    headers: {
+      Connection: 'close',
+      'User-agent': randomUAgent(),
+    },
+  };
+
+  try {
+    const res = await fetch(url, options);
+    if (res.status !== 200) {
+      const msg = `${res.statusText} for this url: ${url}`;
+      throw new Error(msg);
+    }
+    const data = await res.text();
+    const lines = data.split('\n');
+
+    for (const line of lines) {
+      const regex = /(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5})/;
+      const match = line.match(regex);
+      if (!match) continue;
+      const proxy = match[0];
+      const isValidProxy = validateProxy(proxy);
+      if (isValidProxy) proxies.push(proxy);
+    }
+  } catch (e) {
+    err = e;
+  } finally {
+    clearTimeout(timer);
+    controller.abort();
+    if (!proxies.length) {
+      err = new Error(`Proxies not found in this url: ${url}`);
+    }
+    cb(err, proxies);
+  }
+};
+
+module.exports = (sources, options) =>
   new Promise((resolve) => {
-    const dc = new Collector(sources.length).done((errors, results) => {
-      for (const key in errors) {
-        const error = errors[key];
-        logger.show('debug', error);
-      }
-      const scrapedProxies = new Set();
-      for (const key in results) {
-        const result = results[key];
-        if (result.length > 0) {
-          for (const data of result) {
-            scrapedProxies.add(data);
-          }
-        }
-      }
-      const { size } = scrapedProxies;
-      logger.show('system', `Scraper is done! Proxy count: ${size}`);
-      resolve(scrapedProxies);
-    });
+    const { timeout, channels } = options;
+    const dataCollector = new Collector(sources.length).done(
+      (errors, results) => {
+        showErrors(errors);
+        const result = resultsHandler(results);
+        const msg = `Scraper is done! Proxy count: ${result.size}`;
+        logger.show('system', msg);
+        resolve(result);
+      },
+    );
+
     let i = 1;
+
     const queue = Queue.channels(channels)
-      .timeout(timeout)
-      .process((url, cb) => {
-        const proxies = [];
-        const options = {
-          timeout,
-          method: 'GET',
-          headers: {
-            'User-agent': randomUAgent(),
-            'Content-Type': 'application/json',
-          },
-        };
-        fetch(url, options)
-          .then(
-            (res) => res.text(),
-            (reason) => cb(reason),
-          )
-          .then(
-            (data) => {
-              const lines = data.split('\n');
-              for (const line of lines) {
-                const regex = /(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5})/;
-                const match = line.match(regex);
-                if (match) {
-                  const proxy = match[0];
-                  const isValidProxy = validateProxy(proxy);
-                  if (isValidProxy) proxies.push(proxy);
-                }
-              }
-              if (proxies.length > 0) {
-                cb(null, proxies);
-              } else {
-                const err = new Error(`Proxies not found in url: ${url}`);
-                cb(err);
-              }
-            },
-            (reason) => cb(reason),
-          )
-          .catch((err) => cb(err));
-      })
-      .success((res) => void dc.pick(`Task${i}`, res))
-      .failure((err) => void dc.fail(`Task${i}`, err?.message))
+      .process((url, cb) => void scrapeProxy(url, timeout, cb))
+      .success((res) => void dataCollector.pick(`Task${i}`, res))
+      .failure((err) => void dataCollector.fail(`Task${i}`, err.message))
       .done(() => void i++);
 
     logger.show('system', 'Scraping started!');
