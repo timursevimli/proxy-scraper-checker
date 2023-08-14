@@ -1,6 +1,6 @@
 {
   "name": "proxy-scraper",
-  "description": "Multifunctional proxy scraper of develop by Node.js",
+  "description": "Multifunctional proxy scraper and checker",
   "version": "1.0.0",
   "keywords": [
     "proxy",
@@ -11,16 +11,16 @@
     "socks4",
     "socks5",
     "nodejs",
-    "parallel"
+    "parallel",
+    "proxyscrape",
+    "proxyscraper",
+    "proxycheck",
+    "proxychecker"
   ],
   "license": "MIT",
   "author": "Timur Sevimli",
   "email": "svmlitimur@gmail.com",
   "url": "https://github.com/Alesko43/proxy-scraper",
-  "funding": {
-    "type": "coffee",
-    "url": "https://www.buymeacoffee.com/alesko43"
-  },
   "engines": {
     "node": "18 || 20"
   },
