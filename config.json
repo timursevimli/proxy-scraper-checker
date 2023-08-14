@@ -2,5 +2,9 @@
   "mode": "single",
   "timeout": 10000,
   "source": "proxy_sources.txt",
-  "channel": 100
+  "channel": 100,
+  "logging": {
+    "success": true,
+    "failures": false
+  }
 }
