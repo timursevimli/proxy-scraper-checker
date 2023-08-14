@@ -15,7 +15,9 @@
     "proxyscrape",
     "proxyscraper",
     "proxycheck",
-    "proxychecker"
+    "proxychecker",
+    "list",
+    "proxylist"
   ],
   "license": "MIT",
   "author": "Timur Sevimli",
