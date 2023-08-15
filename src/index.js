@@ -41,7 +41,7 @@ const executionException = () => {
 };
 
 const boot = async (options) => {
-  const { mode, timeout, source, channel } = options;
+  const { mode, timeout, source, channel, logging } = options;
   const executorOption = executorOptions[mode];
   if (!executorOption) executionException();
   const { executor, getChannel } = executorOption;
@@ -49,7 +49,7 @@ const boot = async (options) => {
   const channels = getChannel(channel, tasks.length);
   const proxySources = await getSource(source);
   const proxies = await scraper(proxySources, { timeout, channels });
-  await executor(proxies, tasks, { timeout, channels });
+  await executor(proxies, tasks, { timeout, channels, logging });
   finalize();
 };
 
