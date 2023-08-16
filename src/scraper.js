@@ -53,12 +53,15 @@ const scrapeProxy = async (url, timeout, cb) => {
       const msg = `${res.statusText} for this url: ${url}`;
       throw new Error(msg);
     }
-    const data = await res.text();
-    const lines = data.split('\n');
+    const result = await res.text();
 
-    for (const line of lines) {
+    const datas = result.split('\n').length === 1 ?
+      result.split(',') :
+      result.split('\n');
+
+    for (const data of datas) {
       const regex = /(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5})/;
-      const match = line.match(regex);
+      const match = data.match(regex);
       if (!match) continue;
       const proxy = match[0];
       const isValidProxy = validateProxy(proxy);
