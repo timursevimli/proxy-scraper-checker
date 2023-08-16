@@ -23,13 +23,15 @@ const resultsHandler = (results) => {
 };
 
 const scrapeProxy = async (url, timeout, cb) => {
-  const proxies = [];
-  let err = null;
-
   const controller = new AbortController();
+  let aborted = false;
 
-  const timer = setTimeout(() => {
-    controller.abort();
+  let timer = setTimeout(() => {
+    timer = null;
+    if (!aborted) {
+      controller.abort();
+      aborted = true;
+    }
     const msg = `Request timeout for this url: ${url}`;
     cb(new Error(msg));
   }, timeout);
@@ -42,6 +44,8 @@ const scrapeProxy = async (url, timeout, cb) => {
       'User-agent': randomUAgent(),
     },
   };
+
+  const proxies = [];
 
   try {
     const res = await fetch(url, options);
@@ -60,15 +64,17 @@ const scrapeProxy = async (url, timeout, cb) => {
       const isValidProxy = validateProxy(proxy);
       if (isValidProxy) proxies.push(proxy);
     }
-  } catch (e) {
-    err = e;
+    if (proxies.length > 0) return void cb(null, proxies);
+    const err = new Error(`Proxies not found in this url: ${url}`);
+    cb(err);
+  } catch (error) {
+    cb(error);
   } finally {
-    clearTimeout(timer);
-    controller.abort();
-    if (!proxies.length) {
-      err = new Error(`Proxies not found in this url: ${url}`);
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
     }
-    cb(err, proxies);
+    if (!aborted) controller.abort();
   }
 };
 
