@@ -14,7 +14,7 @@ const resultsHandler = (results) => {
   const scrapedProxies = new Set();
   for (const key in results) {
     const result = results[key];
-    if (!result.length) continue;
+    if (result.length === 0) continue;
     for (const data of result) {
       scrapedProxies.add(data);
     }
