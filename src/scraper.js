@@ -24,15 +24,11 @@ const resultsHandler = (results) => {
 
 const scrapeProxy = async (url, timeout, cb) => {
   const controller = new AbortController();
-  let aborted = false;
 
   let timer = setTimeout(() => {
     timer = null;
-    if (!aborted) {
-      controller.abort();
-      aborted = true;
-    }
-    const msg = `Request timeout for this url: ${url}`;
+    controller.abort();
+    const msg = `Request aborted from timer for url: ${url}`;
     cb(new Error(msg));
   }, timeout);
 
@@ -67,7 +63,7 @@ const scrapeProxy = async (url, timeout, cb) => {
       if (isValidProxy) proxies.push(proxy);
     }
     if (proxies.length > 0) return void cb(null, proxies);
-    const err = new Error(`Proxies not found in this url: ${url}`);
+    const err = new Error(`Proxies not found in url: ${url}`);
     cb(err);
   } catch (error) {
     cb(error);
@@ -76,7 +72,6 @@ const scrapeProxy = async (url, timeout, cb) => {
       clearTimeout(timer);
       timer = null;
     }
-    if (!aborted) controller.abort();
   }
 };
 
