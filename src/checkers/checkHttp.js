@@ -1,7 +1,7 @@
 'use strict';
 
 const { Agent } = require('node:http');
-const { getDuration, getGeoInfo, randomUAgent } = require('../utils/');
+const { getDuration, getGeoInfo, getUserAgent } = require('../utils/');
 
 const checkHttp = async (task, cb) => {
   const { proxy, timeout } = task;
@@ -14,7 +14,7 @@ const checkHttp = async (task, cb) => {
     signal: AbortSignal.timeout(timeout),
     headers: {
       Connection: 'close',
-      'User-agent': randomUAgent(),
+      'User-agent': getUserAgent(),
     },
   };
 
