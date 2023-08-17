@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collector, Queue, logger } = require('./lib');
-const { randomUAgent, validateProxy } = require('./utils/');
+const { validateProxy } = require('./utils/');
 
 const showErrors = (errors) => {
   for (const key in errors) {
@@ -32,25 +32,15 @@ const scrapeProxy = async (url, timeout, cb) => {
     cb(new Error(msg));
   }, timeout);
 
-  const options = {
-    signal: controller.signal,
-    method: 'GET',
-    headers: {
-      Connection: 'close',
-      'User-agent': randomUAgent(),
-    },
-  };
-
   const proxies = [];
 
   try {
-    const res = await fetch(url, options);
-    if (res.status !== 200) {
-      const msg = `${res.statusText} for this url: ${url}`;
-      throw new Error(msg);
+    const res = await fetch(url, { signal: controller.signal });
+    if (res.status >= 400) {
+      const err = new Error(`${res.statusText} for url: ${url}`);
+      return void cb(err);
     }
     const result = await res.text();
-
     const datas =
       result.split('\n').length === 1 ? result.split(',') : result.split('\n');
 
@@ -66,6 +56,7 @@ const scrapeProxy = async (url, timeout, cb) => {
     const err = new Error(`Proxies not found in url: ${url}`);
     cb(err);
   } catch (error) {
+    console.log({ error });
     cb(error);
   } finally {
     if (timer) {
