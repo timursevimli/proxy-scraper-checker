@@ -5,6 +5,6 @@ module.exports = {
   getSourceSync: require('./getSourceSync.js'),
   getGeoInfo: require('./getGeoInfo.js'),
   getDuration: require('./getDuration.js'),
-  randomUAgent: require('./randomUAgent.js'),
+  getUserAgent: require('./getUserAgent.js'),
   validateProxy: require('./validateProxy.js'),
 };
