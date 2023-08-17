@@ -55,12 +55,10 @@ const boot = async (options) => {
 
 process.on('uncaughtExceptionMonitor', (err) => void logger.show('error', err));
 
-process.on('uncaughtException', (err) => {
+process.on('uncaughtException', async (err) => {
   logger.error(err);
-  setTimeout(async () => {
-    await logger.close();
-    process.exit(1);
-  }, 0);
+  await logger.close();
+  process.exit(1);
 });
 
 process.on('SIGINT', async () => {

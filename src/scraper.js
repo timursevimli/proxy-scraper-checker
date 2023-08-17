@@ -55,9 +55,8 @@ const scrapeProxy = async (url, timeout, cb) => {
     }
     const result = await res.text();
 
-    const datas = result.split('\n').length === 1 ?
-      result.split(',') :
-      result.split('\n');
+    const datas =
+      result.split('\n').length === 1 ? result.split(',') : result.split('\n');
 
     for (const data of datas) {
       const regex = /(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5})/;
