@@ -1,18 +1,16 @@
 'use strict';
 
-const { getSource } = require('./utils');
+const { curry } = require('./utils');
 const { logger } = require('./lib');
 const checkers = require('./checkers');
 const checker = require('./checker.js');
 const scraper = require('./scraper.js');
 
-const seqCheck = async (proxies, tasks, options) => {
-  for (const task of tasks) {
-    await checker(proxies, task, options);
-  }
+const seqCheck = async (tasks, options, proxies) => {
+  for (const task of tasks) await checker(proxies, task, options);
 };
 
-const parCheck = (proxies, tasks, options) =>
+const parCheck = (tasks, options, proxies) =>
   new Promise((resolve) => {
     const promises = tasks.map((task) => checker(proxies, task, options));
     Promise.all(promises).finally(resolve);
@@ -26,30 +24,27 @@ const finalize = async () => {
 
 const executorOptions = {
   multi: {
-    executor: parCheck,
+    executor: curry(parCheck),
     getChannel: (ch, count) => (ch / count).toFixed(0),
   },
   single: {
-    executor: seqCheck,
+    executor: curry(seqCheck),
     getChannel: (ch) => ch,
   },
 };
 
-const executionException = () => {
-  const msg = "Wrong mode, use 'single' or 'multi' mode in config.json!";
-  throw new Error(msg);
+const initCheckers = (options) => {
+  const executorOption = executorOptions[options.mode];
+  const { executor, getChannel } = executorOption;
+  const tasks = Object.values(checkers);
+  const channels = getChannel(options.channels, tasks.length);
+  return executor(tasks, { ...options, channels });
 };
 
 const boot = async (options) => {
-  const { mode, timeout, source, channel, logging } = options;
-  const executorOption = executorOptions[mode];
-  if (!executorOption) executionException();
-  const { executor, getChannel } = executorOption;
-  const tasks = Object.values(checkers);
-  const channels = getChannel(channel, tasks.length);
-  const proxySources = await getSource(source);
-  const proxies = await scraper(proxySources, { timeout, channels });
-  await executor(proxies, tasks, { timeout, channels, logging });
+  const proxies = await scraper(options.scraper);
+  const checkersExecutor = initCheckers(options.checker);
+  await checkersExecutor(proxies);
   finalize();
 };
 

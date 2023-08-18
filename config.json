@@ -1,10 +1,16 @@
 {
-  "mode": "single",
-  "timeout": 10000,
-  "source": "proxy_sources.txt",
-  "channel": 100,
-  "logging": {
-    "success": true,
-    "failures": false
+  "scraper": {
+    "source": "proxy_sources.txt",
+    "timeout": 10000,
+    "channels": 15
+  },
+  "checker": {
+    "mode": "single",
+    "timeout": 10000,
+    "channels": 100,
+    "logging": {
+      "success": true,
+      "failures": false
+    }
   }
 }

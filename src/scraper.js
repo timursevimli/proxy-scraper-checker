@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collector, Queue, logger } = require('./lib');
-const { validateProxy } = require('./utils/');
+const { validateProxy, getSource } = require('./utils/');
 
 const showErrors = (errors) => {
   for (const key in errors) {
@@ -65,9 +65,11 @@ const scrapeProxy = async (url, timeout, cb) => {
   }
 };
 
-module.exports = (sources, options) =>
-  new Promise((resolve) => {
-    const { timeout, channels } = options;
+module.exports = async (options) => {
+  const { timeout, source, channels } = options;
+  const sources = await getSource(source);
+
+  return new Promise((resolve) => {
     const dataCollector = new Collector(sources.length).done(
       (errors, results) => {
         showErrors(errors);
@@ -78,14 +80,15 @@ module.exports = (sources, options) =>
       },
     );
 
-    let i = 1;
+    let count = 1;
 
     const queue = Queue.channels(channels)
       .process((url, cb) => void scrapeProxy(url, timeout, cb))
-      .success((res) => void dataCollector.pick(`Task${i}`, res))
-      .failure((err) => void dataCollector.fail(`Task${i}`, err.message))
-      .done(() => void i++);
+      .success((res) => void dataCollector.pick(`Task${count}`, res))
+      .failure((err) => void dataCollector.fail(`Task${count}`, err.message))
+      .done(() => void count++);
 
     logger.show('system', 'Scraping started!');
     for (const source of sources) queue.add(source);
   });
+};
