@@ -10,7 +10,7 @@ const showErrors = (errors) => {
   }
 };
 
-const resultsHandler = (results) => {
+const getScrapedProxies = (results) => {
   const scrapedProxies = new Set();
   for (const key in results) {
     const result = results[key];
@@ -32,8 +32,6 @@ const scrapeProxy = async (url, timeout, cb) => {
     cb(new Error(msg));
   }, timeout);
 
-  const proxies = [];
-
   try {
     const res = await fetch(url, { signal: controller.signal });
     if (res.status >= 400) {
@@ -43,6 +41,8 @@ const scrapeProxy = async (url, timeout, cb) => {
     const result = await res.text();
     const datas =
       result.split('\n').length === 1 ? result.split(',') : result.split('\n');
+
+    const proxies = [];
 
     for (const data of datas) {
       const regex = /(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5})/;
@@ -56,7 +56,6 @@ const scrapeProxy = async (url, timeout, cb) => {
     const err = new Error(`Proxies not found in url: ${url}`);
     cb(err);
   } catch (error) {
-    console.log({ error });
     cb(error);
   } finally {
     if (timer) {
@@ -72,10 +71,10 @@ module.exports = (sources, options) =>
     const dataCollector = new Collector(sources.length).done(
       (errors, results) => {
         showErrors(errors);
-        const result = resultsHandler(results);
-        const msg = `Scraper is done! Proxy count: ${result.size}`;
+        const proxies = getScrapedProxies(results);
+        const msg = `Scraper is done! Proxy count: ${proxies.size}`;
         logger.show('system', msg);
-        resolve(result);
+        resolve(proxies);
       },
     );
 
