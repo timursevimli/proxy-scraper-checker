@@ -28,7 +28,7 @@
   },
   "main": "main.js",
   "scripts": {
-    "start": "node main.js",
+    "start": "node --no-warnings=ExperimentalWarnings main.js",
     "test": "node test/testRunner.js",
     "lint": "eslint . && prettier -c '**/*.js' '**/*.json' '**/*.md'",
     "fmt": "prettier --write '**/*.js' '**/*.json' '**/*.md'"
