@@ -41,7 +41,7 @@ const checkSocks4 = (task, cb) => {
     cb(err, res);
   });
 
-  socket.on('data', async (data) => {
+  socket.on('data', (data) => {
     const [version, status] = data;
 
     if (version !== 0x00 && status !== 0x5a) {
@@ -49,14 +49,9 @@ const checkSocks4 = (task, cb) => {
       return void socket.end();
     }
 
-    try {
-      const geoInfo = await getGeoInfo(proxy);
-      res = `SOCKS4 ${geoInfo} ${duration}`;
-    } catch (e) {
-      err = e;
-    } finally {
-      socket.destroy();
-    }
+    const country = getGeoInfo(host);
+    res = `SOCKS4 ${proxy} ${country} ${duration}`;
+    socket.end();
   });
 };
 

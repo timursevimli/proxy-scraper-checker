@@ -1,35 +1,52 @@
 'use strict';
 
-const { Agent } = require('node:http');
+const http = require('node:http');
 const { getDuration, getGeoInfo, getUserAgent } = require('../utils/');
 
-const checkHttps = async (task, cb) => {
+const checkHttps = (task, cb) => {
   const { proxy, timeout } = task;
   const [host, port] = proxy.split(':');
-  const url = 'https://google.com';
+
+  const controller = new AbortController();
+
+  let timer = setTimeout(() => {
+    timer = null;
+    controller.abort();
+    const err = new Error('Aborted from timer!');
+    cb(err);
+  }, timeout);
 
   const options = {
+    hostname: 'google.com',
+    port: 443,
     method: 'GET',
-    agent: new Agent({ host, port }),
-    signal: AbortSignal.timeout(timeout),
+    signal: controller.signal,
+    agent: new http.Agent({ host, port }),
     headers: {
       Connection: 'close',
-      'User-agent': getUserAgent(),
+      'User-Agent': getUserAgent(),
     },
   };
 
   const begin = getDuration();
 
-  try {
-    const res = await fetch(url, options);
-    if (res.status !== 200) return void cb(res.statusText);
+  const req = http.request(options, (res) => {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+    if (res.statusCode !== 200) {
+      const err = new Error(res.statusMessage);
+      return void cb(err);
+    }
     const duration = getDuration(begin);
-    const geoInfo = await getGeoInfo(proxy);
-    const result = `HTTPS ${geoInfo} ${duration}`;
+    const country = getGeoInfo(host);
+    const result = `HTTP ${proxy} ${country} ${duration}`;
     cb(null, result);
-  } catch (e) {
-    cb(e);
-  }
+  });
+
+  req.on('error', (err) => void cb(err));
+  req.end();
 };
 
 module.exports = checkHttps;
