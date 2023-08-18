@@ -46,7 +46,7 @@ class Logger {
     if (showLog) {
       const level = type.toUpperCase();
       const line = `${date} [${level}] \t ${s}`;
-      console.log(COLORS[type] + line + '\x1b[0m');
+      process.stdout.write(COLORS[type] + line + '\n');
       return;
     }
     const line = `${date} \t ${s}`;
