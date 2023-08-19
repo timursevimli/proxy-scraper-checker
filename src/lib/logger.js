@@ -35,7 +35,7 @@ class Logger {
     return new Promise((resolve) => this.#logFileStream.end(resolve));
   }
 
-  write(type = 'info', s, showLog) {
+  write(type = 'info', s, options = {}) {
     const currentDate = new Date().toISOString().substring(0, 10);
     if (currentDate !== this.date) {
       this.date = currentDate;
@@ -43,10 +43,21 @@ class Logger {
     }
     const now = new Date().toISOString();
     const date = now.substring(0, DATETIME_LENGTH);
-    if (showLog) {
+    if (options.show) {
       const level = type.toUpperCase();
       const line = `${date} [${level}] \t ${s}`;
       process.stdout.write(COLORS[type] + line + '\n');
+      return;
+    }
+    if (options.progress) {
+      const { count, max } = options;
+      const last = count === max;
+      const level = type.toUpperCase();
+      const line = `${date} [${level}] \t ${s}`;
+      process.stdout.clearLine();
+      process.stdout.cursorTo(0);
+      if (!last) process.stdout.write(COLORS[type] + line);
+      else process.stdout.write(COLORS[type] + line + '\n');
       return;
     }
     const line = `${date} \t ${s}`;
@@ -56,8 +67,14 @@ class Logger {
 
   show(type = 'info', ...args) {
     const msg = util.format(...args);
-    const showLog = true;
-    this.write(type, msg, showLog);
+    const options = { show: true };
+    this.write(type, msg, options);
+  }
+
+  progress(type = 'info', count, max, ...args) {
+    const msg = util.format(...args);
+    const options = { progress: true, count, max };
+    this.write(type, msg, options);
   }
 
   log(...args) {
