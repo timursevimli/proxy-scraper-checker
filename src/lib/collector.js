@@ -8,7 +8,8 @@ class Collector {
     this.keys = new Set();
     this.count = 0;
     this.timer = null;
-    this.doneCallback = () => {};
+    this.doneCallback = null;
+    this.finishCallback = () => {};
     this.finished = false;
     this.data = {};
     this.errors = {};
@@ -25,6 +26,7 @@ class Collector {
     } else {
       this.data[key] = value;
     }
+    if (this.doneCallback) this.doneCallback(err);
     if (this.expected === this.count) {
       this.finalize(this.errors, this.data);
     }
@@ -67,6 +69,11 @@ class Collector {
     return this;
   }
 
+  finish(callback) {
+    this.finishCallback = callback;
+    return this;
+  }
+
   finalize(err, data) {
     if (this.finished) return this;
     if (this.doneCallback) {
@@ -75,7 +82,7 @@ class Collector {
         this.timer = null;
       }
       this.finished = true;
-      this.doneCallback(err, data);
+      this.finishCallback(err, data);
     }
     return this;
   }
