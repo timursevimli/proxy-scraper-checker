@@ -28,8 +28,7 @@ const scrapeProxy = async (url, timeout, cb) => {
   let timer = setTimeout(() => {
     timer = null;
     controller.abort();
-    const msg = `Request aborted from timer for url: ${url}`;
-    cb(new Error(msg));
+    cb(new Error(`Request aborted from timer for url: ${url}`));
   }, timeout);
 
   try {
@@ -39,8 +38,8 @@ const scrapeProxy = async (url, timeout, cb) => {
       return void cb(err);
     }
     const result = await res.text();
-    const datas =
-      result.split('\n').length === 1 ? result.split(',') : result.split('\n');
+    const lines = result.split('\n');
+    const datas = lines.length === 1 ? result.split(',') : lines;
 
     const proxies = [];
 
@@ -53,8 +52,7 @@ const scrapeProxy = async (url, timeout, cb) => {
       if (isValidProxy) proxies.push(proxy);
     }
     if (proxies.length > 0) return void cb(null, proxies);
-    const err = new Error(`Proxies not found in url: ${url}`);
-    cb(err);
+    cb(new Error(`Proxies not found in url: ${url}`));
   } catch (error) {
     cb(error);
   } finally {
@@ -68,6 +66,7 @@ const scrapeProxy = async (url, timeout, cb) => {
 module.exports = async (options) => {
   const { timeout, source, channels } = options;
   const sources = await getSource(source);
+
   let count = 1;
   let success = 0;
   let failed = 0;
@@ -78,8 +77,8 @@ module.exports = async (options) => {
         setTimeout(() => {
           showErrors(errors);
           const proxies = getScrapedProxies(results);
-          const msg = `Scraper is done! Proxy count: ${proxies.size}`;
-          logger.show('system', msg);
+          const { size } = proxies;
+          logger.show('system', `Scraper is done! Proxy count: ${size}`);
           resolve(proxies);
         }, 0);
       })
