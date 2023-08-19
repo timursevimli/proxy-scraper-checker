@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collector, Queue, logger } = require('./lib');
-const { validateProxy, getSource } = require('./utils/');
+const { validateProxy, getSource, showProgress } = require('./utils/');
 
 const showErrors = (errors) => {
   for (const key in errors) {
@@ -68,25 +68,31 @@ const scrapeProxy = async (url, timeout, cb) => {
 module.exports = async (options) => {
   const { timeout, source, channels } = options;
   const sources = await getSource(source);
+  let count = 1;
+  let success = 0;
+  let failed = 0;
 
   return new Promise((resolve) => {
-    const dataCollector = new Collector(sources.length).done(
-      (errors, results) => {
-        showErrors(errors);
-        const proxies = getScrapedProxies(results);
-        const msg = `Scraper is done! Proxy count: ${proxies.size}`;
-        logger.show('system', msg);
-        resolve(proxies);
-      },
-    );
-
-    let count = 1;
+    const dataCollector = new Collector(sources.length)
+      .finish((errors, results) => {
+        setTimeout(() => {
+          showErrors(errors);
+          const proxies = getScrapedProxies(results);
+          const msg = `Scraper is done! Proxy count: ${proxies.size}`;
+          logger.show('system', msg);
+          resolve(proxies);
+        }, 0);
+      })
+      .done((err) => {
+        err ? failed++ : success++;
+        showProgress(sources.length, count, success, failed);
+      });
 
     const queue = Queue.channels(channels)
       .process((url, cb) => void scrapeProxy(url, timeout, cb))
-      .success((res) => void dataCollector.pick(`Task${count}`, res))
+      .success((res) =>  void dataCollector.pick(`Task${count}`, res))
       .failure((err) => void dataCollector.fail(`Task${count}`, err.message))
-      .done(() => void count++);
+      .done(() => void (count++));
 
     logger.show('system', 'Scraping started!');
     for (const source of sources) queue.add(source);
