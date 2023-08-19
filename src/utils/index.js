@@ -8,4 +8,5 @@ module.exports = {
   getUserAgent: require('./getUserAgent.js'),
   validateProxy: require('./validateProxy.js'),
   curry: require('./curry.js'),
+  showProgress: require('./showProgress.js'),
 };
