@@ -34,8 +34,7 @@ const scrapeProxy = async (url, timeout, cb) => {
   try {
     const res = await fetch(url, { signal: controller.signal });
     if (res.status >= 400) {
-      const err = new Error(`${res.statusText} for url: ${url}`);
-      return void cb(err);
+      throw new Error(`${res.statusText} for url: ${url}`);
     }
     const result = await res.text();
     const lines = result.split('\n');
@@ -51,8 +50,11 @@ const scrapeProxy = async (url, timeout, cb) => {
       const isValidProxy = validateProxy(proxy);
       if (isValidProxy) proxies.push(proxy);
     }
-    if (proxies.length > 0) return void cb(null, proxies);
-    cb(new Error(`Proxies not found in url: ${url}`));
+    if (proxies.length > 0) {
+      cb(null, proxies);
+    } else {
+      throw new Error(`Proxies not found in url: ${url}`));
+    }
   } catch (error) {
     cb(error);
   } finally {
