@@ -9,4 +9,5 @@ module.exports = {
   validateProxy: require('./validateProxy.js'),
   curry: require('./curry.js'),
   showProgress: require('./showProgress.js'),
+  parseJson: require('./parseJson.js'),
 };
