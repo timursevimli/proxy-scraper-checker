@@ -12,5 +12,8 @@
       "success": true,
       "failures": false
     }
+  },
+  "parser": {
+    "json": true
   }
 }
