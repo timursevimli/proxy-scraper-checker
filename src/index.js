@@ -1,6 +1,6 @@
 'use strict';
 
-const { curry } = require('./utils');
+const { curry, parseJson } = require('./utils');
 const { logger } = require('./lib');
 const checkers = require('./checkers');
 const checker = require('./checker.js');
@@ -45,6 +45,7 @@ const boot = async (options) => {
   const proxies = await scraper(options.scraper);
   const checkersExecutor = initCheckers(options.checker);
   await checkersExecutor(proxies);
+  if (options.parser.json) await parseJson(logger.logFile);
   finalize();
 };
 
