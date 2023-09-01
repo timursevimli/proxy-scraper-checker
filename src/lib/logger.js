@@ -17,17 +17,24 @@ const DATETIME_LENGTH = 19;
 
 class Logger {
   #logFileStream;
+  #currentLogFile;
 
   constructor(logPath) {
     this.path = logPath;
     this.date = new Date().toISOString().substring(0, 10);
     this.#logFileStream = null;
+    this.#currentLogFile = undefined;
     this.#createFileStream();
+  }
+
+  get logFile() {
+    return this.#currentLogFile.slice();
   }
 
   #createFileStream() {
     if (this.#logFileStream) this.#logFileStream.end();
     const filePath = path.join(this.path, `${this.date}.log`);
+    this.#currentLogFile = filePath;
     this.#logFileStream = fs.createWriteStream(filePath, { flags: 'a' });
   }
 
