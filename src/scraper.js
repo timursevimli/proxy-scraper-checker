@@ -51,7 +51,7 @@ const scrapeProxy = async (url, timeout, cb) => {
       if (isValidProxy) proxies.push(proxy);
     }
     if (proxies.length === 0) {
-      throw new Error(`Proxies not found in url: ${url}`));
+      throw new Error(`Proxies not found in url: ${url}`);
     }
     cb(null, proxies);
   } catch (error) {
