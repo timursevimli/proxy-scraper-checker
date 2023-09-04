@@ -22,7 +22,7 @@
   "license": "MIT",
   "author": "Timur Sevimli",
   "email": "svmlitimur@gmail.com",
-  "url": "https://github.com/Alesko43/proxy-scraper",
+  "url": "https://github.com/timursevimli/proxy-scraper-checker",
   "engines": {
     "node": "18 || 20"
   },
