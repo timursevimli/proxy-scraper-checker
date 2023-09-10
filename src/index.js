@@ -1,18 +1,22 @@
 'use strict';
 
 const { curry, parseJson } = require('./utils');
-const { logger } = require('./lib');
 const checkers = require('./checkers');
 const checker = require('./checker.js');
 const scraper = require('./scraper.js');
+const { Logger } = require('./lib');
 
-const seqCheck = async (tasks, options, proxies) => {
-  for (const task of tasks) await checker(proxies, task, options);
+const logger = new Logger('./logs');
+
+const seqCheck = async (logger, tasks, options, proxies) => {
+  for (const task of tasks) await checker(logger, proxies, task, options);
 };
 
-const parCheck = (tasks, options, proxies) =>
+const parCheck = (logger, tasks, options, proxies) =>
   new Promise((resolve) => {
-    const promises = tasks.map((task) => checker(proxies, task, options));
+    const promises = tasks.map(
+      (task) => checker(logger, proxies, task, options)
+    );
     Promise.all(promises).finally(resolve);
   });
 
@@ -24,29 +28,29 @@ const finalize = async () => {
 
 const executorOptions = {
   multi: {
-    executor: curry(parCheck),
+    executor: curry(parCheck)(logger),
     getChannel: (ch, count) => (ch / count).toFixed(0),
   },
   single: {
-    executor: curry(seqCheck),
+    executor: curry(seqCheck)(logger),
     getChannel: (ch) => ch,
   },
 };
 
-const initCheckers = (options) => {
+const initCheckers = async (options) => {
   const executorOption = executorOptions[options.mode];
   const { executor, getChannel } = executorOption;
   const tasks = Object.values(checkers);
   const channels = getChannel(options.channels, tasks.length);
-  return executor(tasks, { ...options, channels });
+  return await executor(tasks, { ...options, channels });
 };
 
 const boot = async (options) => {
-  const proxies = await scraper(options.scraper);
-  const checkersExecutor = initCheckers(options.checker);
+  const proxies = await scraper(logger, options.scraper);
+  const checkersExecutor = await initCheckers(options.checker);
   await checkersExecutor(proxies);
   if (options.parser.json) await parseJson(logger.logFile);
-  finalize();
+  await finalize();
 };
 
 process.on('uncaughtExceptionMonitor', (err) => void logger.show('error', err));

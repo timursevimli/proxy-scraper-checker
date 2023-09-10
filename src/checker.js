@@ -1,9 +1,9 @@
 'use strict';
 
-const { Queue, logger } = require('./lib/');
+const { Queue } = require('./lib/');
 const { showProgress } = require('./utils');
 
-module.exports = (proxies, checker, options) => {
+module.exports = (logger, proxies, checker, options) => {
   const { channels, timeout, logging } = options;
   const name = checker.name.replace('check', '').toUpperCase();
 
@@ -26,7 +26,9 @@ module.exports = (proxies, checker, options) => {
         if (logging.failures) logger.error(err);
         failed++;
       })
-      .done(() => void showProgress(proxies.size, ++count, success, failed));
+      .done(() => {
+        showProgress(logger, proxies.size, ++count, success, failed);
+      });
 
     logger.show('system', `${name} checker started!`);
     for (const proxy of proxies) queue.add({ proxy, timeout });
