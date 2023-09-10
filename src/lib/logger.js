@@ -4,8 +4,6 @@ const fs = require('node:fs');
 const util = require('node:util');
 const path = require('node:path');
 
-const logPath = path.join(process.cwd(), './logs');
-
 const COLORS = {
   info: '\x1b[1;37m',
   debug: '\x1b[1;33m',
@@ -110,4 +108,4 @@ class Logger {
   }
 }
 
-module.exports = Object.freeze(new Logger(logPath));
+module.exports = Logger;
