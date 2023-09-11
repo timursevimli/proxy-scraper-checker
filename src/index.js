@@ -1,10 +1,10 @@
 'use strict';
 
-const { curry, parseJson } = require('./utils');
 const checkers = require('./checkers');
 const checker = require('./checker.js');
 const scraper = require('./scraper.js');
-const { Logger } = require('./lib');
+const { Logger, curry } = require('./lib');
+const { parseJson } = require('./utils');
 
 const logger = new Logger('./logs');
 
