@@ -33,5 +33,4 @@ module.exports = (logger, proxies, checker, options) => {
     logger.show('system', `${name} checker started!`);
     for (const proxy of proxies) queue.add({ proxy, timeout });
   });
-
 };

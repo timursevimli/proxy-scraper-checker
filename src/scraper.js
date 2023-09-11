@@ -85,9 +85,9 @@ module.exports = async (logger, options) => {
 
     const queue = Queue.channels(channels)
       .process((url, cb) => void scrapeProxy(url, timeout, cb))
-      .success((res) =>  void dataCollector.pick(`Task${count}`, res))
+      .success((res) => void dataCollector.pick(`Task${count}`, res))
       .failure((err) => void dataCollector.fail(`Task${count}`, err.message))
-      .done(() => void (count++));
+      .done(() => void count++);
 
     logger.show('system', 'Scraping started!');
     for (const source of sources) queue.add(source);

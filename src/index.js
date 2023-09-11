@@ -14,8 +14,8 @@ const seqCheck = async (logger, tasks, options, proxies) => {
 
 const parCheck = (logger, tasks, options, proxies) =>
   new Promise((resolve) => {
-    const promises = tasks.map(
-      (task) => checker(logger, proxies, task, options)
+    const promises = tasks.map((task) =>
+      checker(logger, proxies, task, options),
     );
     Promise.all(promises).finally(resolve);
   });
