@@ -7,7 +7,6 @@ module.exports = {
   getDuration: require('./getDuration.js'),
   getUserAgent: require('./getUserAgent.js'),
   validateProxy: require('./validateProxy.js'),
-  curry: require('./curry.js'),
   showProgress: require('./showProgress.js'),
   parseJson: require('./parseJson.js'),
 };
