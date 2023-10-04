@@ -8,6 +8,7 @@
     "mode": "single",
     "timeout": 10000,
     "channels": 100,
+    "check": ["http", "https", "socks4", "socks5"],
     "logging": {
       "success": true,
       "failures": false
