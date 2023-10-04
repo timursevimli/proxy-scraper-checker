@@ -11,7 +11,7 @@ const isExist = async (file) => {
   return exist;
 };
 
-module.exports = async (file) => {
+const getSource = async (file) => {
   const filePath = path.join(sourcesPath, file);
   const exists = await isExist(filePath);
   if (!exists) throw new Error(`File name with ${file} not exist!`);
@@ -26,3 +26,5 @@ module.exports = async (file) => {
     });
   });
 };
+
+module.exports = { getSource };

@@ -1,7 +1,7 @@
 'use strict';
 
-const { Queue } = require('./lib/');
-const { showProgress } = require('./utils');
+const { Queue } = require('./utils/');
+const { showProgress } = require('./lib');
 
 module.exports = (logger, proxies, checker, options) => {
   const { channels, timeout, logging } = options;

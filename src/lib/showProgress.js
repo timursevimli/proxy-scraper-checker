@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = (logger, total, count, success, failed) => {
+const showProgress = (logger, total, count, success, failed) => {
   const progress = ((count / total) * 100).toFixed(0);
   const logs = [
     `Total: ${total}`,
@@ -13,3 +13,5 @@ module.exports = (logger, total, count, success, failed) => {
   ];
   logger.progress('info', count, total, ...logs);
 };
+
+module.exports = { showProgress };

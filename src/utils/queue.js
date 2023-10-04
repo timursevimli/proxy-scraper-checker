@@ -112,4 +112,4 @@ class Queue {
     return this;
   }
 }
-module.exports = Queue;
+module.exports = { Queue };

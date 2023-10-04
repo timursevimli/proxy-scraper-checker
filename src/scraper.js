@@ -1,7 +1,7 @@
 'use strict';
 
-const { Collector, Queue } = require('./lib');
-const { validateProxy, getSource, showProgress } = require('./utils/');
+const { Collector, Queue } = require('./utils');
+const { validate, getSource, showProgress } = require('./lib');
 
 const parseScrapedData = (results) => {
   const scrapedProxies = new Set();
@@ -40,7 +40,7 @@ const scrapeProxy = async (url, timeout, cb) => {
       const match = data.match(regex);
       if (!match) continue;
       const proxy = match[0];
-      const isValidProxy = validateProxy(proxy);
+      const isValidProxy = validate(proxy);
       if (isValidProxy) proxies.push(proxy);
     }
     if (proxies.length === 0) {

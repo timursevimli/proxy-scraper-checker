@@ -3,7 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
-module.exports = (file) =>
+const parseJson = (file) =>
   new Promise((resolve) => {
     let chunks = '';
     const basename = path.basename(file, '.log');
@@ -27,3 +27,5 @@ module.exports = (file) =>
       ws.close();
     });
   });
+
+module.exports = { parseJson };

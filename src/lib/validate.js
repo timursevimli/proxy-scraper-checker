@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = (proxy) => {
+const validate = (proxy) => {
   const ipPort = proxy.split(':');
   if (ipPort.length !== 2) return false;
   const [ip, port] = ipPort;
@@ -20,3 +20,5 @@ module.exports = (proxy) => {
   }
   return true;
 };
+
+module.exports = { validate };

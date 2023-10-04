@@ -1,7 +1,7 @@
 'use strict';
 
 const { isIPv4 } = require('node:net');
-const getSourceSync = require('./getSourceSync.js');
+const { getSourceSync } = require('./getSourceSync.js');
 
 const ARANGE = '2';
 const BRANGE = '3';
@@ -82,4 +82,4 @@ const getGeoInfo = (ip) => {
   return result;
 };
 
-module.exports = getGeoInfo;
+module.exports = { getGeoInfo };

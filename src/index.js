@@ -3,8 +3,8 @@
 const checkers = require('./checkers');
 const checker = require('./checker.js');
 const scraper = require('./scraper.js');
-const { Logger, curry } = require('./lib');
-const { parseJson } = require('./utils');
+const { Logger, curry } = require('./utils');
+const { parseJson } = require('./lib');
 
 const logger = new Logger('./logs');
 

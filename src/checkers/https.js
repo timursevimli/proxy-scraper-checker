@@ -1,7 +1,7 @@
 'use strict';
 
 const { Agent, request } = require('node:http');
-const { getDuration, getGeoInfo, getUserAgent } = require('../utils/');
+const { getDuration, getGeoInfo, getAgent } = require('../lib');
 
 const https = (task, cb) => {
   const { proxy, timeout } = task;
@@ -24,7 +24,7 @@ const https = (task, cb) => {
     agent: new Agent({ host, port }),
     headers: {
       Connection: 'close',
-      'User-Agent': getUserAgent(),
+      'User-Agent': getAgent(),
     },
   };
 

@@ -87,4 +87,4 @@ class Collector {
     return this;
   }
 }
-module.exports = Collector;
+module.exports = { Collector };
