@@ -40,8 +40,9 @@ const executorOptions = {
 const initCheckers = async (options) => {
   const executorOption = executorOptions[options.mode];
   const { executor, getChannel } = executorOption;
-  const tasks = Object.values(checkers);
-  const channels = getChannel(options.channels, tasks.length);
+  const tasks = options.check.map((key) => checkers[key]);
+  const tasksCount = Object.keys(tasks).length;
+  const channels = getChannel(options.channels, tasksCount);
   return await executor(tasks, { ...options, channels });
 };
 
