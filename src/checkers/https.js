@@ -1,9 +1,9 @@
 'use strict';
 
-const http = require('node:http');
+const { Agent, request } = require('node:http');
 const { getDuration, getGeoInfo, getUserAgent } = require('../utils/');
 
-const checkHttp = (task, cb) => {
+const https = (task, cb) => {
   const { proxy, timeout } = task;
   const [host, port] = proxy.split(':');
 
@@ -17,11 +17,11 @@ const checkHttp = (task, cb) => {
   }, timeout);
 
   const options = {
-    hostname: 'vulnweb.com',
-    port: 80,
+    hostname: 'google.com',
+    port: 443,
     method: 'GET',
     signal: controller.signal,
-    agent: new http.Agent({ host, port }),
+    agent: new Agent({ host, port }),
     headers: {
       Connection: 'close',
       'User-Agent': getUserAgent(),
@@ -30,7 +30,7 @@ const checkHttp = (task, cb) => {
 
   const begin = getDuration();
 
-  const req = http.request(options, (res) => {
+  const req = request(options, (res) => {
     if (timer) {
       clearTimeout(timer);
       timer = null;
@@ -49,4 +49,4 @@ const checkHttp = (task, cb) => {
   req.end();
 };
 
-module.exports = checkHttp;
+module.exports = { https };
