@@ -5,7 +5,7 @@ const { showProgress } = require('./utils');
 
 module.exports = (logger, proxies, checker, options) => {
   const { channels, timeout, logging } = options;
-  const name = checker.name.replace('check', '').toUpperCase();
+  const name = checker.name.toUpperCase();
 
   let count = 0;
   let success = 0;
