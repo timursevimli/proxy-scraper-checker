@@ -1,8 +1,8 @@
 'use strict';
 
 module.exports = {
-  checkHttp: require('./checkHttp.js'),
-  checkHttps: require('./checkHttps.js'),
-  checkSocks4: require('./checkSocks4.js'),
-  checkSocks5: require('./checkSocks5.js'),
+  ...require('./http.js'),
+  ...require('./https.js'),
+  ...require('./socks4.js'),
+  ...require('./socks5.js'),
 };
