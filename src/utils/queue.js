@@ -42,7 +42,7 @@ class Queue {
     let timer = null;
     let finished = false;
     const { processTimeout, onProcess } = this;
-    const finish = (err, res) => {
+    const finish = (err, res = task) => {
       if (finished) return;
       finished = true;
       if (timer) clearTimeout(timer);
