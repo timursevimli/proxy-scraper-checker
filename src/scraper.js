@@ -54,6 +54,7 @@ const scrapeProxy = async (url, timeout, cb) => {
       clearTimeout(timer);
       timer = null;
     }
+    controller.abort();
   }
 };
 
