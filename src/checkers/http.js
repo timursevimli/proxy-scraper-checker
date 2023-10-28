@@ -1,5 +1,6 @@
 'use strict';
 
+const net = require('node:net');
 const { Agent, request } = require('node:http');
 const { getDuration, getGeoInfo, getAgent } = require('../lib');
 
@@ -17,7 +18,8 @@ const http = (task, cb) => {
   }, timeout);
 
   const options = {
-    hostname: 'vulnweb.com',
+    hostname: 'api64.ipify.org',
+    path: '/?format\\=json',
     port: 80,
     method: 'GET',
     signal: controller.signal,
@@ -31,21 +33,30 @@ const http = (task, cb) => {
   const begin = getDuration();
 
   const req = request(options, (res) => {
+    const duration = getDuration(begin);
+
+    res.on('data', (chunk) => {
+      const data = chunk.toString();
+      const isIp = net.isIPv4(data) || net.isIPv6(data);
+      if (!isIp) return void cb(new Error('Proxy is not configured'));
+      const country = getGeoInfo(host);
+      const result = `HTTP ${proxy} ${country} ${duration}`;
+      cb(null, result);
+    });
+
+    if (res.statusCode !== 200) {
+      const message = res.statusMessage || 'Status code is not 200';
+      req.destroy(message);
+    }
+  });
+
+  req.on('error', (err) => void cb(err));
+  req.on('close', () => {
     if (timer) {
       clearTimeout(timer);
       timer = null;
     }
-    if (res.statusCode !== 200) {
-      const err = new Error(res.statusMessage);
-      return void cb(err);
-    }
-    const duration = getDuration(begin);
-    const country = getGeoInfo(host);
-    const result = `HTTP ${proxy} ${country} ${duration}`;
-    cb(null, result);
   });
-
-  req.on('error', (err) => void cb(err));
   req.end();
 };
 
