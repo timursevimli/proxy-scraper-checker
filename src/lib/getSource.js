@@ -3,28 +3,23 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
-const sourcesPath = path.join(process.cwd(), './sources/');
+const SOURCES_PATH = 'sources';
 
-const isExist = async (file) => {
+const isExist = async (fileName) => {
   const toBool = [() => true, () => false];
-  const exist = await fs.promises.access(file).then(...toBool);
+  const exist = await fs.promises.access(fileName).then(...toBool);
   return exist;
 };
 
-const getSource = async (file) => {
-  const filePath = path.join(sourcesPath, file);
+const getSource = async (fileName) => {
+  const filePath = path.join(SOURCES_PATH, fileName);
   const exists = await isExist(filePath);
-  if (!exists) throw new Error(`File name with ${file} not exist!`);
+  if (!exists) return [];
   let datas = '';
   const rs = fs.createReadStream(filePath, 'utf8');
-  rs.on('data', (chunk) => void (datas += chunk));
-  return new Promise((resolve) => {
-    rs.on('end', () => {
-      const lines = datas.split('\n');
-      const result = lines.filter((line) => !!line);
-      resolve(result);
-    });
-  });
+  for await (const chunk of rs) datas += chunk;
+  const lines = datas.split('\n').filter((line) => !!line);
+  return lines;
 };
 
 module.exports = { getSource };
